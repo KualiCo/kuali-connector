@@ -179,6 +179,26 @@ body {
   color: #34D4A5;
 }
 
+.kuali-eyebrow__pill {
+  display: inline-block;
+  margin-left: 0.55em;
+  padding: 0.12em 0.6em 0.14em;
+  border-radius: 999px;
+  background: var(--kuali-flare-accessible);
+  color: #fff;
+  font-size: 0.92em;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  vertical-align: baseline;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 2px 6px rgba(201, 89, 0, 0.18);
+}
+
+[data-md-color-scheme="slate"] .kuali-eyebrow__pill {
+  background: var(--kuali-flare);
+  color: #0B0E13;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 2px 8px rgba(239, 108, 0, 0.35);
+}
+
 /* Caveat handwriting accent — used *only* for short marginalia. Never
  * for primary content, so low-fidelity script font is never blocking
  * comprehension of anything important. */
@@ -904,6 +924,37 @@ body {
 
 [data-md-color-scheme="slate"] .kuali-pitch__body {
   color: #C2CBD7;
+}
+
+/* --- Home: two-up split (intro prose + "is this for you?" callout) ----- */
+
+.md-typeset .kuali-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: start;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin: 2.5rem 0 1.5rem;
+}
+
+/* Match visual start of the two columns: the left column's h2 and the
+ * right column's callout are now peers, so kill the large top margin the
+ * h2 would normally carry, and drop the callout's own top margin too. */
+.md-typeset .kuali-split__main > h2:first-child {
+  margin-top: 0;
+}
+
+.md-typeset .kuali-split .kuali-callout {
+  margin-top: 0;
+}
+
+/* Collapse to single column at tablet-portrait and smaller. 960px matches
+ * the hero's breakpoint so the two-column → one-column transition happens
+ * in the same place. */
+@media (max-width: 960px) {
+  .md-typeset .kuali-split {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }
 
 /* --- Home: "not sure if this is for you" re-skin ------------------------ */

@@ -8,7 +8,7 @@ hide:
 
 <div class="kuali-hero-copy" markdown>
 
-<span class="kuali-eyebrow">Kuali Connector · Preview</span>
+<span class="kuali-eyebrow">Kuali Connector <span class="kuali-eyebrow__pill">Preview</span></span>
 
 # Connect <span class="kuali-hero-mark">Kuali</span> to your AI assistant.
 
@@ -106,6 +106,10 @@ Ask Claude, Copilot, or any MCP-compatible assistant to pull data, build apps, m
 
 </div>
 
+<div class="kuali-split" markdown>
+
+<div class="kuali-split__main" markdown>
+
 ## What is the Kuali Connector?
 
 The **Kuali Connector** is a small program that runs on your computer and lets your AI assistant talk to your Kuali instance on your behalf. It speaks the [Model Context Protocol](https://modelcontextprotocol.io) (MCP), which is the open standard that tools like Claude Desktop, Claude Code, Codex, Gemini CLI, and GitHub Copilot use to plug in external capabilities.
@@ -114,11 +118,15 @@ Once installed, you can ask your assistant things like *"create a Travel Authori
 
 The same binary also works as a full-featured CLI (`kuali apps list`, `kuali documents create`, `kuali export csv`, …) — handy for scripts, CI pipelines, or the moments when you'd rather just type a command.
 
+</div>
+
 <div class="kuali-callout" role="note" markdown>
 <p class="kuali-callout__title">Is this a good fit?</p>
 
 The Connector is for people who already interact with Kuali regularly — curriculum coordinators, research administrators, sponsored-programs officers, build-app owners, and platform admins — and who want their AI assistant to do the routine work for them. If your team uses Claude, Copilot, Gemini, or any other MCP-capable tool, you can put Kuali in front of it with one command.
 
 If you only log into Kuali occasionally, the web app is probably still the fastest path.
+
+</div>
 
 </div>
