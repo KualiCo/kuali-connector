@@ -39,7 +39,7 @@ The Kuali Connector is a single self-contained binary, around 20 MB, with no run
 - A 64-bit operating system (amd64 or arm64)
 - An internet connection to reach your Kuali instance
 - Permission to run an executable your organization hasn't pre-approved (see the macOS and Windows guides for the one-time "first-launch" approval dance)
-- Optional: an [MCP-compatible AI client](../guides/index.md) — Claude Desktop, Claude Code, Codex CLI, Gemini CLI, Copilot CLI, or VS Code
+- Optional: an [AI client that supports local MCP servers](../guides/index.md) — Claude Desktop, Claude Code, Codex CLI, Gemini CLI, Copilot CLI, or VS Code. (ChatGPT and other hosted-only clients aren't supported — see the [FAQ](../faq.md#does-it-work-with-chatgpt).)
 
 ## Verify your install
 

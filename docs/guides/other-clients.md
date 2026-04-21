@@ -1,6 +1,9 @@
 # Other AI clients
 
-The Connector works with any client that speaks the [Model Context Protocol](https://modelcontextprotocol.io). `kuali mcp setup` knows how to configure six of them out of the box.
+The Connector works with any client that supports **local MCP servers** — ones launched as a subprocess and spoken to over stdio. `kuali mcp setup` knows how to configure six of them out of the box.
+
+!!! note "ChatGPT isn't one of them"
+    ChatGPT (chatgpt.com, the ChatGPT desktop app) only supports **hosted** MCP servers reachable at a public HTTPS URL — it can't launch a local binary. The Kuali Connector is a local MCP server. Use **OpenAI Codex CLI** instead if you want an OpenAI model driving Kuali today, or see the [FAQ](../faq.md#does-it-work-with-chatgpt).
 
 ## OpenAI Codex CLI
 
@@ -36,9 +39,9 @@ kuali mcp setup --profile myschool --client vscode
 
 Writes `.vscode/mcp.json` **in the current directory** — this one is project-local rather than user-global, so you can scope the Connector to the repo you're working in. Open VS Code in that folder and Copilot Chat will pick it up.
 
-## Any other MCP client (manual config)
+## Any other local-MCP client (manual config)
 
-The Connector runs over stdio. For a client that doesn't have a built-in helper, add an entry like this to the client's MCP server list:
+The Connector runs as a local MCP server over stdio. For a client that doesn't have a built-in helper but *does* support launching a local stdio MCP server, add an entry like this to the client's server list:
 
 ```json
 {

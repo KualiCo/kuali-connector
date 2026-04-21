@@ -2,7 +2,7 @@
 
 **Connect Kuali to your AI assistant.**
 
-The Kuali Connector lets Claude, Copilot, Gemini, Codex, and any other MCP-compatible AI assistant work directly with your Kuali instance — pull data, build apps, move workflows, and run reports in plain English. It also works as a full-featured CLI for scripting and automation.
+The Kuali Connector is a **local MCP server** that lets Claude, Copilot, Gemini, Codex, and any other AI client which supports local MCP servers work directly with your Kuali instance — pull data, build apps, move workflows, and run reports in plain English. It also works as a full-featured CLI for scripting and automation. (ChatGPT isn't supported yet — it only supports hosted MCP servers; see the FAQ on the docs site.)
 
 ## 👉 Full documentation
 

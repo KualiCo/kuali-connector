@@ -2,7 +2,7 @@
 
 ## What is the Kuali Connector, really?
 
-A small program that runs on your computer and gives your AI assistant — or your terminal — a structured, secure way to talk to your Kuali instance. It speaks the [Model Context Protocol (MCP)](https://modelcontextprotocol.io), so any MCP-capable AI client (Claude Desktop, Claude Code, OpenAI Codex CLI, Google Gemini CLI, GitHub Copilot CLI, VS Code with Copilot) can use it. The same binary also works as a full `kuali` command-line tool for scripts and CI.
+A small program that runs on your computer and gives your AI assistant — or your terminal — a structured, secure way to talk to your Kuali instance. It's a **local MCP server**: it speaks the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) over stdio from your machine, so any AI client that supports local MCP servers (Claude Desktop, Claude Code, OpenAI Codex CLI, Google Gemini CLI, GitHub Copilot CLI, VS Code with Copilot) can use it. The same binary also works as a full `kuali` command-line tool for scripts and CI.
 
 ## Do I need to be a developer?
 
@@ -14,7 +14,7 @@ Yes. It's free for any institution with an active Kuali subscription. No extra l
 
 ## Does my data get sent to OpenAI / Anthropic / Google?
 
-Only what the AI client normally sends. When you ask the assistant a question, it calls the Connector's tools locally, the Connector calls your Kuali instance directly, and the results come back to the assistant — which does send the **content of the tool responses** to its own model for reasoning. That's how AI tool-use works with any MCP server.
+Only what the AI client normally sends. When you ask the assistant a question, it calls the Connector's tools locally, the Connector calls your Kuali instance directly, and the results come back to the assistant — which does send the **content of the tool responses** to its own model for reasoning. That's how AI tool-use works with any MCP server, local or hosted.
 
 What doesn't happen:
 
@@ -35,7 +35,7 @@ No. The Connector authenticates with a **Kuali API key** — a signed token you 
 
 ## Which AI clients work?
 
-Any MCP-capable client. `kuali mcp setup` has built-in wiring for six:
+Any AI client that supports **local MCP servers** (stdio transport). `kuali mcp setup` has built-in wiring for six:
 
 - Claude Desktop
 - Claude Code
@@ -45,6 +45,18 @@ Any MCP-capable client. `kuali mcp setup` has built-in wiring for six:
 - VS Code with Copilot Chat (project-local config)
 
 For clients not on that list, add a `kuali` entry to the client's MCP server list manually — the [other clients guide](guides/other-clients.md) shows the shape.
+
+## Does it work with ChatGPT?
+
+Not yet. ChatGPT (the chatgpt.com web/desktop app) only supports **hosted** MCP servers — servers reachable at an HTTPS URL on the public internet — and the Kuali Connector is a **local** MCP server that runs on your own machine and talks to the client over stdio. The two don't meet in the middle: ChatGPT can't launch a local binary, and the Connector isn't designed to be exposed over the internet (among other things, that would put your institution's API keys on a server we don't run).
+
+A few notes that may reduce confusion:
+
+- **OpenAI Codex CLI works fine** — it's OpenAI's terminal product and does support local MCP servers. That's the one to use if you want to drive Kuali from an OpenAI model today.
+- **ChatGPT Apps / Connectors** (OpenAI's partner program) is the hosted-MCP channel. A supported hosted offering is on our roadmap but isn't available yet; we don't have a date.
+- **Claude.ai (the web app)** is in the same boat — it talks to hosted MCP servers, not local ones. Use Claude Desktop, Claude Code, or the Claude API for now.
+
+In short: if your AI client launches a local binary over stdio, the Connector works. If it expects an HTTPS URL, it doesn't — yet.
 
 ## Which operating systems are supported?
 
@@ -56,7 +68,7 @@ No. The Connector is a thin client. It needs a live connection to your Kuali ins
 
 ## I have sandbox and production instances. Is that a problem?
 
-That's the expected setup — use [profiles](guides/first-connection.md#working-with-multiple-environments). A common configuration is sandbox in full-access mode and production in read-only mode. You can register both in the same AI client by editing its config to expose each profile as a separately-named MCP server (e.g. `kuali-sandbox`, `kuali-prod`).
+That's the expected setup — use [profiles](guides/first-connection.md#working-with-multiple-environments). A common configuration is sandbox in full-access mode and production in read-only mode. You can register both in the same AI client by editing its config to expose each profile as a separately-named local MCP server (e.g. `kuali-sandbox`, `kuali-prod`).
 
 ## Can I script with it, or use it in CI?
 

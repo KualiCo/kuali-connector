@@ -1,6 +1,6 @@
 # Command reference
 
-Every CLI capability the Connector exposes. Same binary that powers the [MCP server](mcp-tools.md) — every tool your AI assistant can call has a direct CLI counterpart.
+Every CLI capability the Connector exposes. Same binary that powers the [local MCP server](mcp-tools.md) — every tool your AI assistant can call has a direct CLI counterpart.
 
 !!! warning "You're limited to what your Kuali user can see"
     Every command authenticates with an API key that inherits the permissions of the Kuali user who created it. The server enforces those permissions — the Connector doesn't relax or bypass them. **If you can't see an app, document, or user in the Kuali web UI, the CLI can't see it either.** Admin-only actions (user management, audit, workflow bypass) require an admin's key. When a command returns "not found" or "forbidden," that's usually a permissions issue, not a CLI bug — confirm by signing in to the web UI as the same user.
@@ -250,7 +250,7 @@ kuali export xlsx <dataset-id | --app <app-id>> [--page <page-id>] [--locale <la
 
 Use `-` as the file argument to write to stdout for piping.
 
-## MCP server
+## Local MCP server
 
 ```bash
 kuali mcp        [--profile <name>] [--tools all|read-only] [--insecure] [--timeout <sec>]
