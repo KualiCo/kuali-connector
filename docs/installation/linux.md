@@ -1,58 +1,85 @@
 # Install on Linux
 
-The Connector supports any **modern 64-bit Linux distribution** (Ubuntu, Debian, Fedora, RHEL, Arch, etc.) on x86_64 or arm64.
+The Connector supports any **modern 64-bit Linux distribution** (Ubuntu, Debian, Fedora, RHEL, Rocky, Arch, Alpine, …) on x86_64 or arm64.
 
-## Option 1: Install script (recommended)
+## Option 1: Install script
 
 ```bash
 curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
 ```
 
-The installer detects your architecture, downloads the correct binary, and installs it to `/usr/local/bin/kuali` (you may be prompted for your password).
+The script auto-detects your architecture and installs to `/usr/local/bin/kuali`. If `/usr/local/bin` isn't writable by your user, it uses `sudo`.
 
-Verify:
+## Option 2: Homebrew on Linux
+
+If you use [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux):
 
 ```bash
-kuali --version
+brew install kualico/tap/kuali
 ```
 
-## Option 2: Manual download
+## Option 3: npx
 
-1. Go to the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
-2. Download the file matching your system:
-
-    - `-linux-amd64.tar.gz` — most Intel/AMD systems
-    - `-linux-arm64.tar.gz` — ARM systems (Raspberry Pi 4+, some cloud VMs)
-
-    Not sure? Run `uname -m`. `x86_64` means amd64; `aarch64` means arm64.
-
-3. Extract and install:
-
-    ```bash
-    tar -xzf kuali-connector-*-linux-*.tar.gz
-    sudo mv kuali /usr/local/bin/kuali
-    sudo chmod +x /usr/local/bin/kuali
-    ```
-
-## Install without sudo
-
-If you don't have root access, install to your home directory:
+With Node.js (18+):
 
 ```bash
-mkdir -p ~/.local/bin
-tar -xzf kuali-connector-*-linux-*.tar.gz -C ~/.local/bin
+npx @kualico/kuali-connector@latest --help
+```
+
+## Option 4: Direct download (no sudo)
+
+If you'd rather install without root access:
+
+```bash
+# Detect your architecture
+ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+
+# Download the latest binary
+curl -fsSL \
+  -o ~/.local/bin/kuali \
+  "https://github.com/kualico/kuali-connector/releases/latest/download/kuali-linux-${ARCH}"
 chmod +x ~/.local/bin/kuali
 ```
 
-Make sure `~/.local/bin` is on your PATH. Add this to `~/.bashrc` or `~/.zshrc` if needed:
+Make sure `~/.local/bin` is on your `PATH`. Add this to `~/.bashrc` or `~/.zshrc` if it isn't:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-## Uninstall
+Then reload your shell (`source ~/.bashrc`) or open a new terminal.
+
+## Verify
 
 ```bash
-sudo rm /usr/local/bin/kuali    # or ~/.local/bin/kuali
-rm -rf ~/.config/kuali          # saved credentials and config
+kuali version
 ```
+
+## Keychain on Linux
+
+The Connector uses the [libsecret](https://wiki.gnome.org/Projects/Libsecret) keychain (GNOME Keyring, KeePassXC, KDE Wallet) via D-Bus. On desktop Linux this Just Works. On headless servers the keychain is often unavailable — the Connector falls back to `~/.kuali/credentials` (mode 0600), or you can supply credentials via the `KUALI_API_KEY` / `KUALI_<PROFILE>_API_KEY` environment variables.
+
+## Uninstall
+
+=== "Installed to /usr/local"
+
+    ```bash
+    sudo rm /usr/local/bin/kuali
+    rm -rf ~/.kuali
+    ```
+
+=== "Installed to ~/.local"
+
+    ```bash
+    rm ~/.local/bin/kuali
+    rm -rf ~/.kuali
+    ```
+
+=== "Homebrew"
+
+    ```bash
+    brew uninstall kuali
+    brew untap kualico/tap
+    ```
+
+If you stored API keys in the keychain, you can remove them via your desktop's secret-management tool (Seahorse, KDE Wallet Manager) or with `secret-tool clear service kuali-cli account <profile>`.

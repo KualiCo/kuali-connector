@@ -311,10 +311,10 @@ body {
 .md-typeset .kuali-hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   align-items: center;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(2rem, 5vw, 3.5rem);
+  gap: clamp(1.5rem, 4vw, 3.25rem);
+  padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(2rem, 5vw, 3.5rem);
   margin-bottom: 1rem;
 }
 
@@ -371,26 +371,40 @@ body {
   align-items: center;
   gap: 0.75rem 1rem;
   position: relative;
+  margin-top: 2.6rem; /* leave vertical room for the "start here" hint */
 }
 
+/* Handwritten "start here" marginalia that visually points at the primary
+ * CTA from above. Absolutely positioned so it doesn't steal button space
+ * and so the arrow geometry always lands near the button edge. */
 .kuali-hero-hint {
+  position: absolute;
+  left: 0.5rem;
+  bottom: calc(100% + 0.15rem);
   font-family: "Caveat", cursive;
   font-weight: 700;
   font-size: 1.55rem;
   color: var(--kuali-flare-accessible);
   line-height: 1;
-  transform: rotate(-4deg);
+  transform: rotate(-6deg);
+  transform-origin: left bottom;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 [data-md-color-scheme="slate"] .kuali-hero-hint {
   color: var(--kuali-torch);
 }
 
-.kuali-hero-hint::before {
-  content: "↖ ";
+/* Curved arrow drawn with a rotated character, positioned so it arcs
+ * from the hint text down toward the primary button. */
+.kuali-hero-hint::after {
+  content: "↘";
   display: inline-block;
-  transform: translateY(-2px);
+  margin-left: 0.3rem;
+  font-size: 1.1em;
+  transform: translateY(0.1em) rotate(12deg);
+  color: inherit;
 }
 
 /* Legacy badge support (left in place for safety). */
@@ -409,16 +423,45 @@ body {
   vertical-align: middle;
 }
 
+/* Hero preview stack: chat mockup + terminal mockup, offset for depth. */
+.kuali-preview-stack {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0; /* terminal overlaps chat */
+}
+
+.kuali-preview-stack > .kuali-chat {
+  position: relative;
+  z-index: 2;
+}
+
+.kuali-preview-stack > .kuali-terminal {
+  position: relative;
+  z-index: 1;
+  margin-top: -1.6rem;
+  margin-left: 2.2rem;
+  margin-right: -0.4rem;
+}
+
+@media (max-width: 960px) {
+  .kuali-preview-stack > .kuali-terminal {
+    margin-top: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 /* Faux terminal — hero right column. Purely decorative, but readable. */
 .kuali-terminal {
   background: #0E1C2B;
   border-radius: 14px;
   box-shadow:
-    0 24px 60px rgba(15, 40, 70, 0.22),
+    0 28px 70px rgba(15, 40, 70, 0.28),
     0 2px 0 rgba(255, 255, 255, 0.04) inset;
   overflow: hidden;
   font-family: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: #E6EEF7;
   position: relative;
   transform: rotate(0.6deg);
@@ -427,6 +470,162 @@ body {
 
 .kuali-terminal:hover {
   transform: rotate(0deg) translateY(-2px);
+}
+
+/* Faux Claude Desktop chat — the primary hero preview for the AI use case. */
+.kuali-chat {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(15, 40, 70, 0.08);
+  box-shadow:
+    0 32px 72px rgba(15, 40, 70, 0.18),
+    0 2px 0 rgba(255, 255, 255, 0.6) inset;
+  overflow: hidden;
+  font-family: "Roboto", system-ui, -apple-system, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--kuali-ink);
+  position: relative;
+  transform: rotate(-0.5deg);
+  transition: transform 0.3s ease;
+}
+
+.kuali-chat:hover {
+  transform: rotate(0) translateY(-2px);
+}
+
+[data-md-color-scheme="slate"] .kuali-chat {
+  background: #13222F;
+  color: #E6EEF7;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.kuali-chat__chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  background: #F4F1EC;
+  border-bottom: 1px solid rgba(15, 40, 70, 0.06);
+}
+
+[data-md-color-scheme="slate"] .kuali-chat__chrome {
+  background: #0F1C27;
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.kuali-chat__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #D0C9BF;
+}
+.kuali-chat__dot--r { background: #FF5F57; }
+.kuali-chat__dot--y { background: #FEBC2E; }
+.kuali-chat__dot--g { background: #28C840; }
+
+.kuali-chat__title {
+  margin-left: 0.6rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--kuali-ink-soft);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+[data-md-color-scheme="slate"] .kuali-chat__title {
+  color: #A6B3C3;
+}
+
+.kuali-chat__body {
+  padding: 1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.kuali-chat__turn {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+}
+
+.kuali-chat__avatar {
+  flex: 0 0 auto;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background: var(--kuali-glacier);
+}
+
+.kuali-chat__turn--ai .kuali-chat__avatar {
+  background: linear-gradient(135deg, var(--kuali-wintergreen) 0%, var(--kuali-glacier) 100%);
+}
+
+.kuali-chat__bubble {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.45rem 0.7rem 0.5rem;
+  border-radius: 10px;
+  background: rgba(52, 107, 167, 0.07);
+}
+
+[data-md-color-scheme="slate"] .kuali-chat__bubble {
+  background: rgba(123, 214, 232, 0.08);
+}
+
+.kuali-chat__turn--ai .kuali-chat__bubble {
+  background: rgba(0, 181, 134, 0.08);
+}
+
+[data-md-color-scheme="slate"] .kuali-chat__turn--ai .kuali-chat__bubble {
+  background: rgba(52, 212, 165, 0.1);
+}
+
+.kuali-chat__bubble p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.kuali-chat__bubble p + p {
+  margin-top: 0.35rem;
+}
+
+.kuali-chat__tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(0, 112, 77, 0.1);
+  color: var(--kuali-wintergreen-accessible);
+  font-family: "Roboto Mono", ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.kuali-chat__tool::before {
+  content: "";
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--kuali-wintergreen);
+}
+
+[data-md-color-scheme="slate"] .kuali-chat__tool {
+  background: rgba(52, 212, 165, 0.15);
+  color: #34D4A5;
 }
 
 .kuali-terminal__chrome {
@@ -490,11 +689,17 @@ body {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  .kuali-terminal {
+  .kuali-terminal,
+  .kuali-chat {
     transform: rotate(0);
     font-size: 0.76rem;
   }
+}
+
+@media (max-width: 480px) {
+  /* On very narrow screens the handwritten hint crowds the CTA stack. */
   .kuali-hero-hint { display: none; }
+  .kuali-hero-actions { margin-top: 0.25rem; }
 }
 
 /* Hero entrance animation — one orchestrated reveal. */
@@ -974,6 +1179,8 @@ html {
   .md-typeset .grid.cards > ul > li:hover,
   .kuali-terminal,
   .kuali-terminal:hover,
+  .kuali-chat,
+  .kuali-chat:hover,
   .kuali-hero > * {
     transform: none;
     transition: none;
@@ -1011,10 +1218,17 @@ html {
   .kuali-callout::before {
     display: none;
   }
-  .kuali-terminal {
+  .kuali-terminal,
+  .kuali-chat {
     background: Canvas;
     color: CanvasText;
     border: 1px solid CanvasText;
+  }
+  .kuali-chat__bubble,
+  .kuali-chat__tool {
+    background: Canvas;
+    border: 1px solid CanvasText;
+    color: CanvasText;
   }
   body {
     background-image: none;

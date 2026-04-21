@@ -1,109 +1,154 @@
 # Troubleshooting
 
-When the Connector isn't working, start here. If nothing below helps, [contact us](../support.md) with the output of `kuali doctor`.
+When something's off, start here. Two diagnostics catch most issues:
 
-## `command not found: kuali`
+```bash
+kuali doctor           # config, URL, auth, API reachability
+kuali mcp verify       # MCP client config, binary path, permissions
+```
 
-Your shell can't find the Connector. The binary either isn't installed, or it isn't on your PATH.
+Pass `--profile <name>` to scope to a specific profile. Pass `--client <name>` to `mcp verify` to inspect a specific AI client's config.
+
+---
+
+## The `kuali` command isn't found
+
+Your shell can't find the binary on `PATH`.
 
 === "macOS / Linux"
 
-    Check whether it's installed:
-
     ```bash
-    ls -la /usr/local/bin/kuali
+    which kuali            # nothing? it's not on PATH
+    ls /usr/local/bin/kuali ~/.local/bin/kuali 2>/dev/null
     ```
 
-    If the file exists but the command still isn't found, your PATH doesn't include `/usr/local/bin`. Add this to `~/.zshrc` (macOS) or `~/.bashrc` (Linux):
+    If the file exists but isn't on `PATH`, add the containing directory to `PATH` in your shell config (`~/.zshrc`, `~/.bashrc`):
 
     ```bash
-    export PATH="/usr/local/bin:$PATH"
+    export PATH="$HOME/.local/bin:$PATH"
     ```
 
-    Then restart your terminal.
+    Then `source` the file or open a new terminal.
 
 === "Windows"
 
-    Open PowerShell and run:
+    Open a **new** PowerShell window — the one you installed in doesn't inherit the updated `PATH`. Still missing?
 
     ```powershell
-    Get-Command kuali
+    where.exe kuali
+    Get-Item "$env:LOCALAPPDATA\Programs\kuali\kuali.exe"
     ```
 
-    If that fails, the install location isn't on your PATH. Review the [Windows install guide](../installation/windows.md) and confirm you added the Connector's folder to your user PATH.
+    If the file exists, reopen PowerShell or sign out and back in so the new `PATH` entry takes effect.
 
-## "Apple cannot verify this developer" on macOS
+## macOS blocks the binary
 
-See the [macOS install guide](../installation/macos.md#apple-cannot-verify-this-developer-warning). Short version: **System Settings → Privacy & Security → Open Anyway**.
+> *"kuali cannot be opened because the developer cannot be verified"*
 
-## "Windows protected your PC" warning
-
-See the [Windows install guide](../installation/windows.md#smartscreen-warning). Click **More info** → **Run anyway**.
-
-## `kuali login` opens the browser but nothing happens after I sign in
-
-The Connector is waiting for your browser to hand back an authentication code. Usually this works automatically, but sometimes a firewall or browser extension blocks it.
-
-Try:
-
-1. Close the browser tab that was opened, return to the terminal, press ++ctrl+c++ to cancel
-2. Run `kuali login --no-browser` instead — it will print a code for you to paste into the browser manually
-
-If that still fails, a campus firewall may be blocking the Connector from listening on the callback port. Contact your IT department with this error.
-
-## "Authentication expired" or 401 errors
-
-Your saved token has expired. Sign in again:
+macOS quarantines any executable downloaded from the web. Clear the flag:
 
 ```bash
-kuali login
+xattr -d com.apple.quarantine $(which kuali)
 ```
 
-## "Could not connect to Kuali"
+Or go through the GUI: **System Settings → Privacy & Security**, scroll to Security, and click **Allow Anyway** next to the Connector entry.
 
-The Connector can't reach your institution's Kuali instance.
+## Windows SmartScreen warns me
 
-1. Confirm the URL is correct:
+On first launch you'll see *"Windows protected your PC"*. Click **More info**, then **Run anyway**. One-time; won't repeat.
 
-    ```bash
-    kuali whoami
-    ```
+## Authentication fails
 
-2. Try loading the Kuali web app in your browser. If it works in the browser but not the Connector, the issue is almost certainly a campus firewall or VPN requirement.
-3. If you're off-campus, check whether your institution requires a VPN to reach Kuali. Connect to the VPN and try again.
+> `Error: authentication failed (401)`
 
-## The Connector hangs or runs very slowly
-
-Run with verbose logging to see what it's doing:
+The API key is wrong, expired, or scoped to a different profile than the command is using.
 
 ```bash
-kuali --verbose <your command>
+kuali auth status --profile myschool      # shows resolved URL + masked key
+kuali doctor --profile myschool           # verifies auth end-to-end
 ```
 
-This will print each network request. If everything is stuck on a single request, your network is the likely culprit.
+Common causes:
 
-## I'm still stuck
+1. **Wrong profile.** `kuali auth status` without `--profile` shows the default profile. Pass `--profile` to see a specific one.
+2. **Key was revoked.** Go to the Kuali web UI, **Settings → API Keys**, and check. Create a new one and run `kuali auth login --profile myschool` again.
+3. **`KUALI_API_KEY` set in the environment.** A plain `KUALI_API_KEY` takes priority over every profile. Run `env | grep KUALI` to check; unset it and try again.
 
-Run the built-in diagnostics:
+## Can't reach the Kuali instance
+
+> `Error: dial tcp: ...` or `x509: certificate signed by unknown authority`
+
+- **Typo in the URL?** `kuali config get api_url --profile myschool` — compare to what you see when you log into the web UI.
+- **VPN/firewall?** Try reaching it from a browser on the same machine. If the browser works and the Connector doesn't, check for a proxy set via `HTTPS_PROXY`.
+- **Self-signed cert on a local instance?** Set `insecure: true` on the profile: `kuali config set insecure true --profile local`, or pass `-k` per command. Don't enable this against a production instance.
+
+## MCP server fails to start in Claude / Codex / etc.
+
+Run the diagnostic first — it'll tell you exactly which piece is wrong:
 
 ```bash
-kuali doctor
+kuali mcp verify                                   # default: Claude Desktop
+kuali mcp verify --client claude-code
+kuali mcp verify --client codex
 ```
 
-This checks:
+It checks six things: config file exists, Kuali entry is registered, binary path resolves, binary is executable, macOS quarantine is clear, and the referenced profile still exists.
 
-- Connector version
-- Configuration location and permissions
-- Network connectivity to your Kuali instance
-- Authentication token status
+Test the server outside the AI client:
 
-Copy the output and include it when you [contact support](../support.md). It saves a lot of back-and-forth.
+```bash
+kuali mcp 2>&1 | head -5
+```
 
-## Filing a bug report
+The process should stay running and print nothing to stdout (MCP uses stdio, so stdout is reserved for protocol messages). If it exits immediately with an error, read the stderr line — auth and config issues show up here first.
 
-If you think you've found a bug, open an issue at [github.com/kualico/kuali-connector/issues](https://github.com/kualico/kuali-connector/issues). Include:
+### I changed my API key and the assistant still fails
 
-- Your operating system and version
-- The output of `kuali --version`
-- The exact command you ran
-- The full output, including any error message
+MCP clients cache the server config. Rerun setup, then restart the client:
+
+```bash
+kuali mcp setup --profile myschool
+```
+
+For Claude Desktop, that means Cmd+Q and reopen — not just closing the window.
+
+## The assistant says a tool doesn't exist
+
+Check which tools are registered:
+
+```bash
+kuali mcp 2>&1 &
+sleep 1
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | kuali mcp
+```
+
+If expected tools are missing, you may have enabled read-only mode. `kuali mcp verify` shows the `args` array — look for `--tools read-only`.
+
+## Multiple profiles, wrong one is used
+
+Priority order for URL and API key resolution:
+
+1. `--api-key` / `--profile` flag on the command
+2. `KUALI_API_KEY` / `KUALI_API_URL` env vars (global — set these with care)
+3. `KUALI_<PROFILE>_API_KEY` / `KUALI_<PROFILE>_API_URL` env vars
+4. OS keychain (from `kuali auth login`)
+5. `~/.kuali/credentials`
+6. `api_key` field in `~/.kuali/config.yaml`
+
+If a wrong profile is being chosen, it's almost always because a global `KUALI_API_KEY` or `KUALI_API_URL` is set and stomping on per-profile values. Unset it:
+
+```bash
+unset KUALI_API_KEY KUALI_API_URL
+```
+
+## Still stuck
+
+Grab diagnostics:
+
+```bash
+kuali doctor --profile myschool -o json > kuali-doctor.json
+kuali mcp verify > kuali-mcp-verify.txt 2>&1
+kuali version
+```
+
+Then [file an issue](../support.md) and attach the outputs. Redact the `api_key` field if any shows up (it shouldn't — `doctor` masks it by default).

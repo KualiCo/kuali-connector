@@ -1,60 +1,37 @@
 # Get help
 
-## Start with your campus Kuali administrator
+## Start with diagnostics
 
-For most questions — especially about what data you should export, which apps you have access to, or how your institution configures Kuali — your **campus Kuali administrator** is the fastest path. They know your local setup.
-
-Not sure who that is? Ask your department's administrative contact or IT help desk.
-
-## Help from Kuali
-
-If your campus administrator can't resolve the issue, or the problem looks like a Connector bug:
-
-<div class="grid cards" markdown>
-
--   :material-github:{ .lg .middle } **Open an issue**
-
-    ---
-
-    Bug reports and feature requests live on GitHub. Include the output of `kuali doctor`.
-
-    [github.com/kualico/kuali-connector/issues :octicons-arrow-right-24:](https://github.com/kualico/kuali-connector/issues)
-
--   :material-email-outline:{ .lg .middle } **Email support**
-
-    ---
-
-    For account issues or anything sensitive you don't want public.
-
-    [support@kuali.co :octicons-arrow-right-24:](mailto:support@kuali.co)
-
--   :material-forum-outline:{ .lg .middle } **Community**
-
-    ---
-
-    Ask other Kuali users — often the fastest answer.
-
-    [Kuali Community :octicons-arrow-right-24:](https://community.kuali.co)
-
-</div>
-
-## Before you reach out
-
-Running `kuali doctor` and including its output saves a lot of back-and-forth:
+Two commands catch most setup issues:
 
 ```bash
-kuali doctor
+kuali doctor              # config, URL, auth, API reachability
+kuali mcp verify          # MCP client config, binary path, permissions
 ```
 
-This prints your version, configuration location, network status, and authentication status — everything a support engineer needs to help you.
+Pass `--profile <name>` to scope to a specific profile, or `--client <name>` to inspect an AI client's MCP configuration. The [troubleshooting guide](guides/troubleshooting.md) has a runbook for the usual failure modes.
 
-If you're reporting a bug, also include:
+## Your campus Kuali administrator
 
-- [x] Your operating system and version
-- [x] The exact command you ran
-- [x] The full output, including any error
-- [x] What you expected to happen instead
+For questions about what data you should access, which apps you have permission for, or how your institution configures Kuali, your **campus Kuali administrator** is almost always the fastest path — they know your local setup. Ask your department contact or IT help desk if you're not sure who that is.
 
-## Security issues
+## File a bug, ask a question, or request a feature
 
-If you've found a **security vulnerability**, please don't post it in a public issue. Email [security@kuali.co](mailto:security@kuali.co) instead. We'll respond within one business day.
+Open an issue in the [kuali-connector repository](https://github.com/kualico/kuali-connector/issues).
+
+Include with the issue:
+
+- Output of `kuali version`
+- Output of `kuali doctor --profile <name> -o json` (redact the masked key if it's still shown — it shouldn't be)
+- For MCP issues: `kuali mcp verify --client <claude-desktop|claude-code|…>`
+- OS and version
+- The exact command you ran or the prompt you gave your AI assistant
+- What you expected to happen and what actually happened
+
+## Security
+
+Email `security@kuali.co` for anything that might be a vulnerability. Please don't disclose publicly until we've had a chance to respond.
+
+## Community
+
+If you'd like to compare notes with other Kuali users, the Kuali Community forum (accessible via your institution's Kuali admin) is a good place for workflows, prompts, and automation recipes.

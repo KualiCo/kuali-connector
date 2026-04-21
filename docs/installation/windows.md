@@ -1,57 +1,66 @@
 # Install on Windows
 
-The Connector supports **Windows 10 and Windows 11**, 64-bit.
+The Connector supports **Windows 10 and Windows 11** on both amd64 and arm64.
 
-## Option 1: PowerShell installer (recommended)
+## Option 1: Direct download (recommended)
 
-Open **PowerShell** (press ++win++, type `PowerShell`, press ++enter++) and paste:
+1. Open the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
+2. Download `kuali-windows-amd64.exe` (most PCs) or `kuali-windows-arm64.exe` (Copilot+ PCs and other ARM machines).
+3. Rename the file to `kuali.exe`.
+4. Move it to a folder on your `PATH`. A common choice is `%LOCALAPPDATA%\Programs\kuali\`:
+
+    ```powershell
+    $dir = "$env:LOCALAPPDATA\Programs\kuali"
+    New-Item -ItemType Directory -Force -Path $dir | Out-Null
+    Move-Item -Force "$HOME\Downloads\kuali-windows-amd64.exe" "$dir\kuali.exe"
+    ```
+
+5. Add that folder to your user `PATH` if it isn't there already:
+
+    ```powershell
+    [Environment]::SetEnvironmentVariable(
+      "PATH",
+      "$env:PATH;$env:LOCALAPPDATA\Programs\kuali",
+      "User"
+    )
+    ```
+
+    Open a **new** PowerShell window so the updated `PATH` takes effect.
+
+## Option 2: npx (no install)
+
+If you have Node.js (18+) installed:
 
 ```powershell
-iwr -useb https://kualico.github.io/kuali-connector/install.ps1 | iex
+npx @kualico/kuali-connector@latest --help
 ```
 
-The installer will download the latest Connector and put it somewhere on your PATH. Close and reopen PowerShell, then verify:
+## Option 3: WSL
+
+If you use Windows Subsystem for Linux, install the Linux build inside your WSL distro — see the [Linux guide](linux.md). An AI client running on Windows can still call a Connector installed in WSL if you point the MCP config at the WSL binary path (`\\wsl$\Ubuntu\home\you\.local\bin\kuali`).
+
+## First-launch approval
+
+Windows SmartScreen may warn the first time you run an unsigned executable.
+
+!!! warning "If you see *"Windows protected your PC"*"
+    Click **More info**, then **Run anyway**. You'll only see this once per machine.
+
+## Verify
 
 ```powershell
-kuali --version
+kuali version
 ```
 
-## Option 2: Winget
-
-If you have [Windows Package Manager](https://learn.microsoft.com/en-us/windows/package-manager/):
-
-```powershell
-winget install Kuali.Connector
-```
-
-## Option 3: Manual download
-
-1. Go to the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
-2. Download the file ending in `-windows-amd64.zip`.
-3. Right-click the downloaded file → **Extract All...**
-4. Copy `kuali.exe` somewhere permanent, such as `C:\Program Files\Kuali\`.
-5. Add that folder to your PATH:
-
-    - Press ++win++ and type "environment variables"
-    - Click **Edit the system environment variables**
-    - Click **Environment Variables...**
-    - Under **User variables**, select `Path` and click **Edit**
-    - Click **New** and paste `C:\Program Files\Kuali\`
-    - Click **OK** on all dialogs
-
-6. Close and reopen PowerShell, then run `kuali --version` to verify.
-
-## SmartScreen warning
-
-The first time you run `kuali.exe`, Windows SmartScreen may show a warning that the file is from an unknown publisher. If that happens:
-
-1. Click **More info**
-2. Click **Run anyway**
-
-Your campus IT department may block this. If so, contact them about getting the Kuali Connector approved.
+If the command isn't found, `PATH` likely didn't pick up the new folder — close and reopen PowerShell, or sign out and back in.
 
 ## Uninstall
 
-1. Delete the `kuali.exe` file from wherever you installed it
-2. Remove it from your PATH (reverse the steps above)
-3. Delete `%USERPROFILE%\.config\kuali` to remove saved credentials and config
+```powershell
+Remove-Item "$env:LOCALAPPDATA\Programs\kuali" -Recurse -Force
+Remove-Item "$HOME\.kuali" -Recurse -Force
+```
+
+To remove the directory from your `PATH`, open **Settings → System → About → Advanced system settings → Environment Variables**, find `Path` under *User variables*, edit, and remove the `…\Programs\kuali` entry.
+
+If you stored API keys in Windows Credential Manager (via `kuali auth login`), open **Credential Manager → Windows Credentials** and delete the entries under the `kuali-cli` service.

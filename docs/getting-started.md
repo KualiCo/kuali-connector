@@ -1,95 +1,143 @@
-# Getting started
+# Get started in 5 minutes
 
-This guide walks you through installing the Connector, signing in, and running your first command. It takes about **5 minutes**.
+By the end of this page you'll have the Kuali Connector installed, connected to your Kuali instance, and wired into an AI assistant so you can ask questions in plain English.
 
-## Before you start
+!!! tip "What you'll need"
+    - A Kuali instance URL (for example, `https://yourschool.kualibuild.com`)
+    - A Kuali API key — **Settings → API Keys** in the Kuali web UI
+    - An AI client you already use: [Claude Desktop](https://claude.ai/download), [Claude Code](https://www.anthropic.com/claude-code), Codex CLI, Gemini CLI, GitHub Copilot CLI, or VS Code with Copilot
 
-You'll need:
-
-- [x] A computer running **macOS, Windows, or Linux**
-- [x] An active **Kuali account** at your institution
-- [x] Permission from your campus Kuali administrator to use the Connector (ask your administrator if unsure)
+---
 
 ## 1. Install the Connector
 
-Pick your operating system:
+Pick whichever matches your setup. Full per-OS instructions are on the [install](installation/index.md) page.
 
-=== "macOS"
-
-    Open **Terminal** (press ++cmd+space++, type `Terminal`, press ++enter++) and paste:
+=== "macOS / Linux"
 
     ```bash
     curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
     ```
 
-    [Full macOS install guide :octicons-arrow-right-24:](installation/macos.md)
+=== "Homebrew"
+
+    ```bash
+    brew install kualico/tap/kuali
+    ```
+
+=== "npx (no install)"
+
+    ```bash
+    npx @kualico/kuali-connector@latest --help
+    ```
 
 === "Windows"
 
-    Open **PowerShell** (press ++win++, type `PowerShell`, press ++enter++) and paste:
+    Download `kuali-windows-amd64.exe` from the [latest release](https://github.com/kualico/kuali-connector/releases/latest), rename it to `kuali.exe`, and place it somewhere on your `PATH`.
 
-    ```powershell
-    iwr -useb https://kualico.github.io/kuali-connector/install.ps1 | iex
-    ```
+Verify the binary is on your path:
 
-    [Full Windows install guide :octicons-arrow-right-24:](installation/windows.md)
+```bash
+kuali version
+```
 
-=== "Linux"
+## 2. Connect your Kuali instance
 
-    Open your terminal and paste:
+Tell the Connector where your instance lives and sign in. The API key is written to your OS keychain (macOS Keychain, Windows Credential Manager, or libsecret on Linux) — it never lands in a plaintext file.
+
+```bash
+kuali config set api_url https://yourschool.kualibuild.com --profile myschool
+kuali auth login --profile myschool
+```
+
+`myschool` is just a label. If you only have one Kuali instance, you can omit `--profile` and the default profile is used. You can add more later by repeating both commands with a different `--profile` name (for example `sandbox`, `prod`, `staging`).
+
+Check that everything is talking:
+
+```bash
+kuali doctor --profile myschool
+```
+
+You should see green ticks for URL, auth, and API reachability. If anything fails, jump to [troubleshooting](guides/troubleshooting.md).
+
+## 3. Wire it into your AI assistant
+
+One command reads your saved profile, finds your AI client's config file, and writes the Connector entry for you.
+
+=== "Claude Desktop"
 
     ```bash
-    curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
+    kuali mcp setup --profile myschool
     ```
 
-    [Full Linux install guide :octicons-arrow-right-24:](installation/linux.md)
+    Then fully quit and relaunch Claude Desktop.
 
-Verify the install worked:
+=== "Claude Code"
 
-```bash
-kuali --version
-```
+    ```bash
+    kuali mcp setup --profile myschool --client claude-code
+    ```
 
-You should see a version number like `kuali 1.0.0`. If you see "command not found," see [Troubleshooting](guides/troubleshooting.md).
+=== "Codex / Gemini / Copilot / VS Code"
 
-## 2. Sign in to Kuali
+    ```bash
+    kuali mcp setup --profile myschool --client codex
+    kuali mcp setup --profile myschool --client gemini-cli
+    kuali mcp setup --profile myschool --client copilot-cli
+    kuali mcp setup --profile myschool --client vscode
+    ```
 
-```bash
-kuali login
-```
+!!! note "Want the assistant to look but not change anything?"
+    Add `--tools read-only` to the setup command. Only read tools (list, get, export, search, status) are registered — create, update, submit, approve, and delete are hidden. See [Read-only mode](guides/read-only-mode.md).
 
-This opens your browser. Sign in with your normal campus credentials (the same ones you use for the Kuali web app). When you're done, you'll see a "You can close this window" message. Return to the terminal.
-
-!!! info "Why does it open a browser?"
-
-    The Connector uses the same single sign-on you use everywhere else on campus. Your password never touches the Connector — it stays with your institution's identity provider.
-
-## 3. Run your first command
-
-Try listing the Kuali applications you have access to:
+Confirm the setup landed correctly:
 
 ```bash
-kuali apps list
+kuali mcp verify
 ```
 
-You should see a table of the apps available to you.
+## 4. Ask your assistant something
 
-## What's next?
+Open Claude Desktop (or your chosen client) and try one of these:
 
-You're set up. Here's what to try next:
+> "List the first ten apps in our Kuali instance."
+
+> "Which documents in the Travel Request app are awaiting my approval?"
+
+> "Summarize how many submissions each Human Ethics reviewer has completed this quarter."
+
+The assistant will call the appropriate MCP tools (`kuali_apps_list`, `kuali_workflows_actions`, `kuali_documents_list`, …) and surface the answer right in the conversation.
+
+The [prompt library](guides/prompts.md) has dozens more — including prompts for building apps from PDFs, importing CSVs with column-mapping dialogs, analyzing workflows, and generating chart reports.
+
+---
+
+## Where to next
 
 <div class="grid cards" markdown>
 
--   :material-connection:{ .lg .middle } **[Set up a connection](guides/first-connection.md)**
+-   :material-lightbulb-on-outline:{ .lg .middle } **Prompt library**
 
-    Configure the Connector for your most common workflow.
+    ---
 
--   :material-clipboard-list-outline:{ .lg .middle } **[Common tasks](guides/common-tasks.md)**
+    Ready-to-use prompts for curriculum, research, build apps, imports, workflow analysis, and reporting.
 
-    Export data, run reports, and automate approvals.
+    [:octicons-arrow-right-24: Prompts](guides/prompts.md)
 
--   :material-console:{ .lg .middle } **[Command reference](reference/commands.md)**
+-   :material-robot-outline:{ .lg .middle } **Client-specific guides**
 
-    Every command the Connector supports.
+    ---
+
+    Tips for Claude Desktop, Claude Code, Codex, Gemini, Copilot, and VS Code.
+
+    [:octicons-arrow-right-24: AI assistants](guides/index.md)
+
+-   :material-console:{ .lg .middle } **Use it as a CLI**
+
+    ---
+
+    Skip the chat — every capability is also a plain `kuali` command, ready for scripts and CI.
+
+    [:octicons-arrow-right-24: Command reference](reference/commands.md)
 
 </div>

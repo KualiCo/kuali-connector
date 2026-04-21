@@ -1,61 +1,90 @@
 # Frequently asked questions
 
+## What is the Kuali Connector, really?
+
+A small program that runs on your computer and gives your AI assistant — or your terminal — a structured, secure way to talk to your Kuali instance. It speaks the [Model Context Protocol (MCP)](https://modelcontextprotocol.io), so any MCP-capable AI client (Claude Desktop, Claude Code, OpenAI Codex CLI, Google Gemini CLI, GitHub Copilot CLI, VS Code with Copilot) can use it. The same binary also works as a full `kuali` command-line tool for scripts and CI.
+
+## Do I need to be a developer?
+
+No. The AI path is the whole point: you install the Connector, run one setup command per AI client, and then talk to Kuali in plain English from the chat you already use. The CLI is available if you want it, but it's never required.
+
 ## Is the Connector free?
 
-Yes. The Kuali Connector is free for any institution with an active Kuali subscription. You don't need an extra license.
+Yes. It's free for any institution with an active Kuali subscription. No extra license is needed for the Connector itself. (You will, however, be using tokens against whichever AI client you've set up — that billing is between you and the AI vendor.)
 
-## Do I need to be a developer or know how to program?
+## Does my data get sent to OpenAI / Anthropic / Google?
 
-No. If you can copy and paste a command into Terminal or PowerShell, you can use the Connector. The [Getting started guide](getting-started.md) is written for people who've never used a command line before.
+Only what the AI client normally sends. When you ask the assistant a question, it calls the Connector's tools locally, the Connector calls your Kuali instance directly, and the results come back to the assistant — which does send the **content of the tool responses** to its own model for reasoning. That's how AI tool-use works with any MCP server.
 
-## Where does the Connector store my password?
+What doesn't happen:
 
-It doesn't. The Connector uses your institution's single sign-on, same as the Kuali web app. Your password never touches the Connector — it goes directly to your campus identity provider.
+- **Your API key never leaves your machine.** It's stored in your OS keychain and used by the local Connector binary. The AI vendor doesn't see it.
+- **Nothing routes through a Kuali-operated proxy.** The Connector talks directly from your machine to your Kuali instance over HTTPS.
 
-After you sign in, the Connector saves a **token** (a revocable secret, not your password) on your computer in `~/.config/kuali/` (macOS/Linux) or `%USERPROFILE%\.config\kuali\` (Windows). You can revoke it any time with `kuali logout`.
+If you want to minimize what the assistant can see, put the profile in [read-only mode](guides/read-only-mode.md) and/or use a low-privilege API key.
 
-## Is it safe to use on my work computer?
+## Can I stop the assistant from changing anything?
 
-Yes. The Connector only talks to your institution's Kuali instance, over HTTPS, using the same authentication you already use. It doesn't phone home to Kuali, Inc. and doesn't collect telemetry.
+Yes. Set the profile up with `kuali mcp setup --tools read-only`. Only read tools are registered — create, update, submit, approve, delete, import tools are hidden from the assistant entirely. See [Read-only mode](guides/read-only-mode.md).
 
-If your campus IT department asks about approving it, point them at the [GitHub repository](https://github.com/kualico/kuali-connector) — all binaries are signed and the release process is public.
+For belt-and-braces protection, issue the Connector an API key that itself has read-only permissions in Kuali.
 
-## Can I use the Connector on multiple computers?
+## Does it use single sign-on?
 
-Yes. Install it on every computer you want to use it on, and run `kuali login` on each.
+No. The Connector authenticates with a **Kuali API key** — a signed token you create in the Kuali web UI under **Settings → API Keys**. API keys inherit the permissions of the user that created them, and can be revoked at any time from the same screen.
 
-## Will it work on my iPad / phone?
+## Which AI clients work?
 
-No. The Connector is a desktop tool — it requires a terminal. For mobile, use the Kuali web app in your browser.
+Any MCP-capable client. `kuali mcp setup` has built-in wiring for six:
+
+- Claude Desktop
+- Claude Code
+- OpenAI Codex CLI
+- Google Gemini CLI
+- GitHub Copilot CLI
+- VS Code with Copilot Chat (project-local config)
+
+For clients not on that list, add a `kuali` entry to the client's MCP server list manually — the [other clients guide](guides/other-clients.md) shows the shape.
+
+## Which operating systems are supported?
+
+macOS 12 or later (Intel and Apple Silicon), Windows 10 or later (amd64 and arm64), and any modern 64-bit Linux. Binaries are statically linked — no runtime dependencies.
 
 ## Does it work offline?
 
-No. The Connector reads from and writes to your Kuali instance in real time. It needs an active connection.
+No. The Connector is a thin client. It needs a live connection to your Kuali instance (and, if you're using an AI assistant, to your AI vendor) to function.
 
-## How do I update to a new version?
+## I have sandbox and production instances. Is that a problem?
 
-Re-run the same install command you used originally:
+That's the expected setup — use [profiles](guides/first-connection.md#working-with-multiple-environments). A common configuration is sandbox in full-access mode and production in read-only mode. You can register both in the same AI client by editing its config to expose each profile as a separately-named MCP server (e.g. `kuali-sandbox`, `kuali-prod`).
+
+## Can I script with it, or use it in CI?
+
+Yes. The CLI is first-class. Every mutation supports `--dry-run`. Pagination (`--limit`, `--skip`, `--all`), output formats (`-o json|csv|yaml|table`), and field filtering (`--fields`) are designed for scripting. In CI, use profile-scoped env vars:
 
 ```bash
-# macOS / Linux
-curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
+export KUALI_PROD_API_KEY=<key>
+kuali apps list --profile prod -o json
 ```
 
-```powershell
-# Windows
-iwr -useb https://kualico.github.io/kuali-connector/install.ps1 | iex
-```
+## Will it update itself?
 
-Or if you installed via Homebrew: `brew upgrade kuali-connector`.
+It will if you ask. Run `kuali update check` to see if a newer version is out, or `kuali update install` to replace the binary in place. Homebrew users can also `brew upgrade kuali`.
 
-## Can I script against the Connector? Automate things?
+## Where is configuration stored?
 
-Yes — that's one of the main reasons it exists. See [Schedule automated exports](guides/common-tasks.md#schedule-automated-exports) for examples. For fully unattended automation, create a long-lived token with `kuali tokens create`.
+| Item | Location |
+|---|---|
+| Instance URLs, profile settings | `~/.kuali/config.yaml` |
+| API keys | OS keychain (service `kuali-cli`, account = profile name) |
+| Credentials fallback | `~/.kuali/credentials`, mode 0600 |
+| MCP client config (Claude Desktop, macOS) | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| MCP client config (Claude Desktop, Windows) | `%APPDATA%\Claude\claude_desktop_config.json` |
 
-## Is the source code open?
+## How do I report a bug or request a feature?
 
-The **public release repository** with binaries is at [github.com/kualico/kuali-connector](https://github.com/kualico/kuali-connector). The Connector's source code is not currently open-sourced, but that may change in the future.
+Open an issue on [the kuali-connector repository](https://github.com/kualico/kuali-connector/issues). For security reports, email `security@kuali.co` — please don't disclose publicly before we've had a chance to respond.
 
-## I have a feature request or found a bug.
+## Is the Connector's source open?
 
-Open an issue at [github.com/kualico/kuali-connector/issues](https://github.com/kualico/kuali-connector/issues), or [contact us](support.md) directly.
+The Connector repository and release downloads are public. The underlying Kuali Platform remains proprietary.

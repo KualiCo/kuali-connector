@@ -1,75 +1,120 @@
-# Your first connection
+# First connection
 
-After installing, the Connector needs to know **which Kuali instance to talk to** and **who you are**. This only has to be done once per computer.
+The Connector needs two pieces of information before it can do anything useful: **which Kuali instance to talk to** and **a Kuali API key that identifies you**. You only configure this once per machine.
 
-## Before you start
+## What you'll need
 
-You'll need:
+- Your Kuali instance URL — something like `https://yourschool.kualibuild.com` or `https://yourschool.kualihub.com`.
+- A Kuali **API key**. Create one in the Kuali web UI under **Settings → API Keys**. The key inherits the permissions of the user that created it, so create it as the user whose access you want the Connector (and, by extension, your AI assistant) to have.
 
-- [x] The Connector installed and working (`kuali --version` returns a version)
-- [x] The URL of your institution's Kuali instance (example: `https://myschool.kuali.co`) — ask your administrator if unsure
-- [x] Your normal campus Kuali login
+!!! info "API key, not your password"
+    The Connector never handles your Kuali password. An API key is a signed token you can revoke any time from the same screen you created it on.
 
-## 1. Point the Connector at your campus
+## 1. Save the instance URL
 
 ```bash
-kuali connect https://myschool.kuali.co
+kuali config set api_url https://yourschool.kualibuild.com --profile myschool
 ```
 
-Replace `myschool.kuali.co` with your institution's actual Kuali URL. The Connector saves this so you don't have to type it again.
+The `--profile` flag is a label you pick. If you only ever talk to one Kuali instance, omit it — the Connector will use the default profile:
+
+```bash
+kuali config set api_url https://yourschool.kualibuild.com
+```
+
+The URL is written to `~/.kuali/config.yaml`.
 
 ## 2. Sign in
 
 ```bash
-kuali login
+kuali auth login --profile myschool
 ```
 
-Your browser will open to your campus sign-in page. Sign in the same way you do for the Kuali web app. When you see "You can close this window," return to the terminal.
+You'll be prompted for the API key. The key is written to your OS keychain (macOS Keychain, Windows Credential Manager, or libsecret on Linux) — it never lands in a plaintext file you might accidentally commit or email.
 
-The Connector now has a secure token saved on your computer. You won't have to sign in again for several weeks, depending on your institution's policy.
-
-## 3. Confirm it worked
+## 3. Verify
 
 ```bash
-kuali whoami
+kuali doctor --profile myschool
 ```
 
-You should see your name, email, and the Kuali instance you're connected to.
+`doctor` runs six checks: config exists, URL is reachable, API key works, GraphQL responds, user identity resolves, and the Connector is up to date. Any failure gives you a specific remediation step.
 
-## Working with multiple Kuali instances
-
-If you work with more than one Kuali instance (for example, a sandbox and production), you can save each as a **named profile**:
+A quick smoke test:
 
 ```bash
-kuali connect --profile sandbox https://sandbox.myschool.kuali.co
-kuali connect --profile prod https://myschool.kuali.co
+kuali apps list --profile myschool
 ```
 
-Switch between them with:
+You should see your institution's apps.
+
+## Working with multiple environments
+
+Most teams have at least a sandbox and a production instance. Give each one its own profile:
 
 ```bash
-kuali use prod
+kuali config set api_url https://sandbox.kualibuild.com --profile sandbox
+kuali auth login --profile sandbox
+
+kuali config set api_url https://prod.kualibuild.com --profile prod
+kuali auth login --profile prod
 ```
 
-Or pass `--profile` to any command:
+Then pick per command:
 
 ```bash
 kuali apps list --profile sandbox
+kuali apps list --profile prod
 ```
 
-## Where is my configuration saved?
-
-| Platform | Location |
-|---|---|
-| macOS / Linux | `~/.config/kuali/` |
-| Windows | `%USERPROFILE%\.config\kuali\` |
-
-This folder contains your saved instance URLs and authentication tokens. It's protected so only your user account can read it. If you're reinstalling on a new machine, you can copy this folder to avoid re-authenticating — though signing in fresh is usually simpler.
-
-## Signing out
+Set a default profile with the `KUALI_PROFILE` environment variable or:
 
 ```bash
-kuali logout
+kuali config set default_profile prod
 ```
 
-This revokes your current token. Run `kuali login` again when you want to come back.
+### Per-profile env vars (handy for CI)
+
+In automated environments you may not want to set up the keychain. The Connector reads API keys from profile-specific environment variables:
+
+```bash
+export KUALI_PROD_API_KEY=<key>
+export KUALI_SANDBOX_API_KEY=<key>
+
+kuali apps list --profile prod      # uses KUALI_PROD_API_KEY
+kuali apps list --profile sandbox   # uses KUALI_SANDBOX_API_KEY
+```
+
+A plain `KUALI_API_KEY` still works and applies to all profiles, but it overrides the per-profile values — so avoid it when you have more than one environment.
+
+## Where things live
+
+| Item | Location |
+|---|---|
+| Config file | `~/.kuali/config.yaml` (Windows: `%USERPROFILE%\.kuali\config.yaml`) |
+| API keys (primary) | OS keychain, service `kuali-cli`, account = profile name |
+| API keys (fallback) | `~/.kuali/credentials`, mode 0600 |
+
+## Sign out
+
+```bash
+kuali auth logout --profile myschool
+```
+
+Removes the stored key for that profile. The URL and other settings stay in the config file — run the command again with a new key whenever you're ready.
+
+## Working with self-signed certificates
+
+If you're talking to a local dev instance with a self-signed cert:
+
+```bash
+kuali config set insecure true --profile local
+```
+
+Or pass `-k` on any command. Don't turn this on for production.
+
+## Next
+
+- [Wire the Connector into an AI client](index.md#ai-assistant-guides)
+- [See what you can ask for](prompts.md)
+- [Restrict an assistant to read-only operations](read-only-mode.md)

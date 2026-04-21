@@ -101,12 +101,17 @@ nav:
       - Linux: installation/linux.md
   - Guides:
       - guides/index.md
+      - Prompt library: guides/prompts.md
+      - Claude Desktop: guides/claude-desktop.md
+      - Claude Code: guides/claude-code.md
+      - Other AI clients: guides/other-clients.md
+      - Read-only mode: guides/read-only-mode.md
       - First connection: guides/first-connection.md
-      - Common tasks: guides/common-tasks.md
       - Troubleshooting: guides/troubleshooting.md
   - Reference:
       - reference/index.md
-      - Commands: reference/commands.md
+      - CLI commands: reference/commands.md
+      - MCP tools: reference/mcp-tools.md
   - FAQ: faq.md
   - Support: support.md
 

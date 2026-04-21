@@ -10,16 +10,16 @@ hide:
 
 <span class="kuali-eyebrow">Kuali Connector · Preview</span>
 
-# Move data between your computer and <span class="kuali-hero-mark">Kuali</span>, from the terminal.
+# Connect <span class="kuali-hero-mark">Kuali</span> to your AI assistant.
 
 <p class="kuali-hero-lede">
-A small command-line tool that downloads and reconciles transactions, pulls reports, and automates approvals — without logging into the web app every time.
+Ask Claude, Copilot, or any MCP-compatible assistant to pull data, build apps, move workflows, and run reports against your Kuali instance — in plain English, right from the chat you already use.
 </p>
 
 <div class="kuali-hero-actions" markdown>
 
 [Get started in 5 minutes :material-arrow-right:](getting-started.md){ .md-button .md-button--primary }
-[Download latest :material-download:](https://github.com/kualico/kuali-connector/releases/latest){ .md-button }
+[Prompt library :material-lightbulb-on-outline:](guides/prompts.md){ .md-button }
 
 <span class="kuali-hero-hint" aria-hidden="true">start here</span>
 
@@ -27,22 +27,28 @@ A small command-line tool that downloads and reconciles transactions, pulls repo
 
 </div>
 
-<aside class="kuali-terminal" aria-label="Example terminal session using the Kuali Connector"><div class="kuali-terminal__chrome" aria-hidden="true"><span class="kuali-terminal__dot kuali-terminal__dot--r"></span><span class="kuali-terminal__dot kuali-terminal__dot--y"></span><span class="kuali-terminal__dot kuali-terminal__dot--g"></span><span class="kuali-terminal__title">~/kuali</span></div><div class="kuali-terminal__body"><div><span class="tk-prompt">$</span><span class="tk-cmd">kuali login</span></div><div><span class="tk-dim">Opening your browser… signed in as j.garcia@example.edu ✓</span></div><div>&nbsp;</div><div><span class="tk-prompt">$</span><span class="tk-cmd">kuali reports export</span> <span class="tk-flag">--id</span> <span class="tk-string">"Q1-grants"</span> <span class="tk-flag">--out</span> <span class="tk-string">./out.csv</span></div><div><span class="tk-dim">Exporting 1,248 rows…</span></div><div><span class="tk-ok">done</span> <span class="tk-dim">→ out.csv (312 KB) in 4.2s</span></div><div>&nbsp;</div><div><span class="tk-prompt">$</span><span class="tk-cmd">_</span><span class="tk-caret" aria-hidden="true"></span></div></div></aside>
+<div class="kuali-preview-stack" markdown>
+
+<aside class="kuali-chat" aria-label="Example conversation with an AI assistant using the Kuali Connector"><div class="kuali-chat__chrome" aria-hidden="true"><span class="kuali-chat__dot kuali-chat__dot--r"></span><span class="kuali-chat__dot kuali-chat__dot--y"></span><span class="kuali-chat__dot kuali-chat__dot--g"></span><span class="kuali-chat__title">Claude · Kuali Connector</span></div><div class="kuali-chat__body"><div class="kuali-chat__turn kuali-chat__turn--user"><span class="kuali-chat__avatar" aria-hidden="true">JG</span><div class="kuali-chat__bubble"><p>Which curriculum proposals are stuck waiting on the Dean's Office for more than 10 days?</p></div></div><div class="kuali-chat__turn kuali-chat__turn--ai"><span class="kuali-chat__avatar" aria-hidden="true">★</span><div class="kuali-chat__bubble"><p>I found 7 proposals sitting at the Dean's review step past your 10-day threshold. The oldest — BIO 4120 Ecology revision — has been there 23 days. Want me to list the approvers for each, or draft a nudge email?</p><span class="kuali-chat__tool">kuali_documents_list · kuali_workflows_status</span></div></div></div></aside>
+
+<aside class="kuali-terminal" aria-label="Example terminal session using the Kuali Connector"><div class="kuali-terminal__chrome" aria-hidden="true"><span class="kuali-terminal__dot kuali-terminal__dot--r"></span><span class="kuali-terminal__dot kuali-terminal__dot--y"></span><span class="kuali-terminal__dot kuali-terminal__dot--g"></span><span class="kuali-terminal__title">~/kuali</span></div><div class="kuali-terminal__body"><div><span class="tk-prompt">$</span> <span class="tk-cmd">kuali auth login</span> <span class="tk-flag">--profile</span> <span class="tk-string">myschool</span></div><div><span class="tk-dim">API key saved to keychain for profile "myschool" ✓</span></div><div>&nbsp;</div><div><span class="tk-prompt">$</span> <span class="tk-cmd">kuali mcp setup</span> <span class="tk-flag">--profile</span> <span class="tk-string">myschool</span></div><div><span class="tk-dim">Wrote Claude Desktop config → restart Claude to finish</span> <span class="tk-ok">✓</span></div><div>&nbsp;</div><div><span class="tk-prompt">$</span> <span class="tk-cmd">_</span><span class="tk-caret" aria-hidden="true"></span></div></div></aside>
 
 </div>
 
-<section class="kuali-pitch" aria-label="What the Connector is for">
+</div>
+
+<section class="kuali-pitch" aria-label="Why the Kuali Connector">
 <div class="kuali-pitch__item">
-<p class="kuali-pitch__title">Routine work, one command</p>
-<p class="kuali-pitch__body">Exports, reports, reconciliations — the tasks you run every week, done in seconds instead of clicks.</p>
+<p class="kuali-pitch__title">Natural-language operations</p>
+<p class="kuali-pitch__body">Ask your assistant to list stalled documents, build a new app from a PDF form, or import a spreadsheet of users — and it will.</p>
 </div>
 <div class="kuali-pitch__item">
-<p class="kuali-pitch__title">Built for non-developers</p>
-<p class="kuali-pitch__body">If you can paste a line into Terminal or PowerShell, you're ready. No install experience required.</p>
+<p class="kuali-pitch__title">Works with every major AI client</p>
+<p class="kuali-pitch__body">Claude Desktop, Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, VS Code — one command wires the Connector into whichever you use.</p>
 </div>
 <div class="kuali-pitch__item">
-<p class="kuali-pitch__title">Safe by default</p>
-<p class="kuali-pitch__body">Uses your campus single sign-on. Your password never touches the Connector — ever.</p>
+<p class="kuali-pitch__title">Your data stays yours</p>
+<p class="kuali-pitch__body">API keys live in your OS keychain. The assistant calls your Kuali instance directly from your machine — nothing routes through a third-party server.</p>
 </div>
 </section>
 
@@ -54,23 +60,31 @@ A small command-line tool that downloads and reconciles transactions, pulls repo
 
     ---
 
-    Install the Connector, sign in to your Kuali account, and run your first command.
+    Install the Connector, connect your Kuali instance, and wire up your first AI assistant in five minutes.
 
     [:octicons-arrow-right-24: Quick start](getting-started.md)
+
+-   :material-lightbulb-on-outline:{ .lg .middle } **Prompt library**
+
+    ---
+
+    Copy-paste prompts for build apps, Curriculum Management, Sponsored Programs, CSV imports, workflow analysis, and chart reports.
+
+    [:octicons-arrow-right-24: Prompts](guides/prompts.md)
 
 -   :material-download-outline:{ .lg .middle } **Installation**
 
     ---
 
-    Step-by-step install guides for macOS, Windows, and Linux. No terminal experience required.
+    Install via Homebrew, `npx`, a one-line installer, or a direct binary download. macOS, Windows, and Linux supported.
 
     [:octicons-arrow-right-24: Install](installation/index.md)
 
--   :material-book-open-variant:{ .lg .middle } **Guides**
+-   :material-robot-outline:{ .lg .middle } **AI assistants**
 
     ---
 
-    How to connect, run common tasks, and troubleshoot when things don't work.
+    Set up Claude Desktop, Claude Code, Codex, Gemini, Copilot, or VS Code. Pick read-only mode if you only want the assistant to look.
 
     [:octicons-arrow-right-24: Guides](guides/index.md)
 
@@ -78,39 +92,33 @@ A small command-line tool that downloads and reconciles transactions, pulls repo
 
     ---
 
-    Every command and option the Connector supports, with examples.
+    The complete `kuali` CLI — every resource, subcommand, and flag, with examples for both humans and scripts.
 
     [:octicons-arrow-right-24: Reference](reference/commands.md)
 
--   :material-help-circle-outline:{ .lg .middle } **FAQ**
+-   :material-tools:{ .lg .middle } **MCP tool reference**
 
     ---
 
-    Answers to the questions we hear most often from faculty and staff.
+    All 94 MCP tools your AI assistant can call, grouped by resource, with read-only and destructive markings.
 
-    [:octicons-arrow-right-24: FAQ](faq.md)
-
--   :material-lifebuoy:{ .lg .middle } **Get help**
-
-    ---
-
-    Stuck? Here's how to reach our team and your campus Kuali administrator.
-
-    [:octicons-arrow-right-24: Support](support.md)
+    [:octicons-arrow-right-24: MCP tools](reference/mcp-tools.md)
 
 </div>
 
-## What is the Connector?
+## What is the Kuali Connector?
 
-The **Kuali Connector** is a small program you run on your own computer. It talks to your institution's Kuali system on your behalf — so routine tasks that used to take several minutes of clicking can happen with a single command.
+The **Kuali Connector** is a small program that runs on your computer and lets your AI assistant talk to your Kuali instance on your behalf. It speaks the [Model Context Protocol](https://modelcontextprotocol.io) (MCP), which is the open standard that tools like Claude Desktop, Claude Code, Codex, Gemini CLI, and GitHub Copilot use to plug in external capabilities.
 
-You don't need to be a developer to use it. If you can copy and paste a line into Terminal or PowerShell, you can use the Connector.
+Once installed, you can ask your assistant things like *"create a Travel Authorization app with a PDF I just uploaded,"* *"import these 2,400 rows into the Human Ethics submissions dataset,"* or *"find proposals that haven't moved in two weeks and draft a nudge."* The assistant will call the Connector's tools, run the right GraphQL and REST calls against your Kuali instance, and stream the results back into the conversation.
+
+The same binary also works as a full-featured CLI (`kuali apps list`, `kuali documents create`, `kuali export csv`, …) — handy for scripts, CI pipelines, or the moments when you'd rather just type a command.
 
 <div class="kuali-callout" role="note" markdown>
-<p class="kuali-callout__title">Not sure if this is for you?</p>
+<p class="kuali-callout__title">Is this a good fit?</p>
 
-If you regularly export data from Kuali, run the same reports on a schedule, or move information between Kuali and another system (Excel, your SIS, a shared drive), the Connector will save you time.
+The Connector is for people who already interact with Kuali regularly — curriculum coordinators, research administrators, sponsored-programs officers, build-app owners, and platform admins — and who want their AI assistant to do the routine work for them. If your team uses Claude, Copilot, Gemini, or any other MCP-capable tool, you can put Kuali in front of it with one command.
 
-If you only log into Kuali occasionally, you probably don't need it — the web app is fine.
+If you only log into Kuali occasionally, the web app is probably still the fastest path.
 
 </div>

@@ -1,66 +1,79 @@
 # Install on macOS
 
-The Connector supports **macOS 12 (Monterey) or later**, on both Intel and Apple Silicon (M1/M2/M3/M4) Macs.
+The Connector supports **macOS 12 (Monterey) or later** on both Intel and Apple Silicon Macs. Choose whichever method feels most natural.
 
-## Option 1: Install script (recommended)
+## Option 1: Homebrew
 
-This is the fastest way. Open **Terminal** (press ++cmd+space++, type `Terminal`, press ++enter++) and paste:
+If you already use [Homebrew](https://brew.sh):
+
+```bash
+brew install kualico/tap/kuali
+```
+
+Upgrade later with `brew upgrade kuali`, or let the Connector update itself with `kuali update install`.
+
+## Option 2: Install script
+
+One line, auto-detects your architecture, installs to `/usr/local/bin/kuali` (prompts for your password if needed):
 
 ```bash
 curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
 ```
 
-The installer will:
+## Option 3: npx (no global install)
 
-1. Detect whether your Mac is Intel or Apple Silicon
-2. Download the correct binary from the [latest release](https://github.com/kualico/kuali-connector/releases/latest)
-3. Place it at `/usr/local/bin/kuali` (you'll be asked for your Mac password)
-4. Print a confirmation message when it's done
-
-Verify:
+If you have Node.js and just want to try it out without touching `/usr/local`:
 
 ```bash
-kuali --version
+npx @kualico/kuali-connector@latest --help
 ```
 
-## Option 2: Homebrew
+## Option 4: Direct download
 
-If you use [Homebrew](https://brew.sh):
-
-```bash
-brew install kualico/tap/kuali-connector
-```
-
-## Option 3: Manual download
-
-1. Go to the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
-2. Download the file ending in `-darwin-arm64.tar.gz` (Apple Silicon) or `-darwin-amd64.tar.gz` (Intel).
-
-    !!! question "Not sure which Mac you have?"
-        Click the Apple menu :fontawesome-brands-apple: in the top-left corner, then **About This Mac**. Under "Chip" or "Processor," look for "Apple M1/M2/M3/M4" (Apple Silicon) or "Intel" (Intel).
-
-3. Double-click the `.tar.gz` to extract it.
-4. Move the extracted `kuali` file to a folder on your PATH, for example:
+1. Open the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
+2. Download `kuali-darwin-arm64` for Apple Silicon (M1/M2/M3/M4) or `kuali-darwin-amd64` for Intel Macs. Not sure which you have? Apple menu → **About This Mac** → look at the "Chip" line.
+3. In Terminal:
 
     ```bash
-    sudo mv ~/Downloads/kuali /usr/local/bin/kuali
-    sudo chmod +x /usr/local/bin/kuali
+    chmod +x ~/Downloads/kuali-darwin-*
+    sudo mv ~/Downloads/kuali-darwin-* /usr/local/bin/kuali
     ```
 
-## "Apple cannot verify this developer" warning
+## First-launch approval
 
-The first time you run `kuali`, macOS may block it because the binary isn't notarized yet. If that happens:
+macOS may block the binary the first time you run it because it wasn't downloaded through the App Store.
 
-1. Open **System Settings** → **Privacy & Security**
-2. Scroll to the **Security** section
-3. Click **Open Anyway** next to the message about `kuali`
-4. Re-run your command in Terminal
+!!! warning "If you see *"kuali cannot be opened because the developer cannot be verified"*"
+    Open **System Settings → Privacy & Security**, scroll to the Security section, and click **Allow Anyway** next to the Connector entry. Then run `kuali version` again and click **Open** in the confirmation dialog.
 
-Your campus IT department may have a policy that prevents this. If so, contact them and ask about getting the Kuali Connector approved.
+    Or, from the terminal, clear the quarantine flag in one step:
+
+    ```bash
+    xattr -d com.apple.quarantine $(which kuali)
+    ```
+
+## Verify
+
+```bash
+kuali version
+```
+
+You should see something like `kuali 1.0.0-rc6 (commit …, built …)`. If not, open [Troubleshooting](../guides/troubleshooting.md).
 
 ## Uninstall
 
-```bash
-sudo rm /usr/local/bin/kuali
-rm -rf ~/.config/kuali   # removes saved credentials and config
-```
+=== "Homebrew"
+
+    ```bash
+    brew uninstall kuali
+    brew untap kualico/tap
+    ```
+
+=== "Script or direct download"
+
+    ```bash
+    sudo rm /usr/local/bin/kuali
+    rm -rf ~/.kuali
+    ```
+
+The `~/.kuali` directory holds your config file and (if you used a plaintext credentials file) saved profiles. If you stored your API key in the keychain, also remove it with `security delete-generic-password -s kuali-cli` (repeat for each profile name).
