@@ -1,18 +1,14 @@
-/* Kuali Connector — theme tuned to Kuali's brand palette.
+/* Kuali Connector — visual system.
  *
- * Palette:
- *   Wintergreen #00B586  (primary)
- *   Glacier     #346BA7
- *   Frost       #57C7DE
- *   Torch       #FFA628
- *   Mint        #6CC459
- *   Popsicle    #7456AA
- *   Magma       #C83397
- *   Chili       #E43935
- *   Flare       #EF6C00
+ * Type: Roboto (body + display) + Caveat (accent-only marginalia).
+ * Palette: Kuali brand tokens with accessible text variants.
+ * Accessibility target: WCAG 2.2 AA.
  */
 
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap");
+
 :root {
+  /* --- Brand tokens (decorative ≥3:1 surfaces) ------------------------ */
   --kuali-wintergreen: #00B586;
   --kuali-wintergreen-dark: #009670;
   --kuali-glacier: #346BA7;
@@ -24,36 +20,143 @@
   --kuali-chili: #E43935;
   --kuali-flare: #EF6C00;
 
-  /* Material primary / accent overrides */
-  --md-primary-fg-color:        var(--kuali-wintergreen);
-  --md-primary-fg-color--light: #33C4A1;
-  --md-primary-fg-color--dark:  var(--kuali-wintergreen-dark);
-  --md-accent-fg-color:         var(--kuali-glacier);
-  --md-accent-fg-color--transparent: rgba(52, 107, 167, 0.1);
+  /* Accessible text-on-white tokens (≥4.5:1 on #FFFFFF). */
+  --kuali-wintergreen-accessible: #00704D;       /* ~5:1 on white */
+  --kuali-wintergreen-accessible-dark: #005A3C;
+  --kuali-glacier-accessible: #2A5789;            /* ~6:1 on white */
+  --kuali-popsicle-accessible: #5A3E8A;
+  --kuali-magma-accessible: #A82C80;
+  --kuali-flare-accessible: #C95900;
 
-  --md-typeset-a-color: var(--kuali-glacier);
+  /* Warm neutral surface for light mode. */
+  --kuali-paper: #FAF8F3;
+  --kuali-ink: #0F1A2A;
+  --kuali-ink-soft: #2E3B4E;
+
+  /* Material primary / accent overrides. */
+  --md-primary-fg-color:        var(--kuali-wintergreen-accessible);
+  --md-primary-fg-color--light: #1f9470;
+  --md-primary-fg-color--dark:  var(--kuali-wintergreen-accessible-dark);
+  --md-accent-fg-color:         var(--kuali-glacier-accessible);
+  --md-accent-fg-color--transparent: rgba(52, 107, 167, 0.12);
+
+  --md-typeset-a-color: var(--kuali-glacier-accessible);
+
+  /* Warm paper background in light mode. */
+  --md-default-bg-color: var(--kuali-paper);
+
+  /* Custom tokens reused below. */
+  --kuali-radius-lg: 16px;
+  --kuali-radius-md: 10px;
+  --kuali-shadow-soft: 0 4px 18px rgba(15, 40, 70, 0.06);
+  --kuali-shadow-raise: 0 16px 38px rgba(15, 40, 70, 0.12);
+  --kuali-focus-ring: 0 0 0 3px rgba(52, 107, 167, 0.45);
 }
 
 [data-md-color-scheme="slate"] {
-  --md-primary-fg-color:        var(--kuali-wintergreen);
-  --md-primary-fg-color--light: #33C4A1;
-  --md-primary-fg-color--dark:  var(--kuali-wintergreen-dark);
+  --md-primary-fg-color:        #00A376;
+  --md-primary-fg-color--light: #1f9470;
+  --md-primary-fg-color--dark:  #005A3C;
   --md-accent-fg-color:         var(--kuali-frost);
-  --md-typeset-a-color:         var(--kuali-frost);
+  --md-typeset-a-color:         #7BD6E8;
+
+  --md-default-bg-color: #0B1722;
+
+  --kuali-focus-ring: 0 0 0 3px rgba(87, 199, 222, 0.55);
+}
+
+/* Soft dot-grid background texture on the body; near-invisible but adds depth. */
+body {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(15, 40, 70, 0.045) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+[data-md-color-scheme="slate"] body {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.045) 1px, transparent 0);
+}
+
+/* --- Preview banner (announcement bar) --------------------------------- */
+
+.md-banner {
+  background: linear-gradient(92deg, var(--kuali-torch) 0%, var(--kuali-flare) 100%);
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.md-banner__inner {
+  text-align: center;
+}
+
+.kuali-preview-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.kuali-preview-badge {
+  display: inline-block;
+  background: #1a1a1a;
+  color: var(--kuali-torch);
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.2em 0.75em;
+  border-radius: 999px;
+}
+
+.kuali-preview-text strong {
+  font-weight: 700;
+}
+
+.md-banner .md-banner__button {
+  color: #1a1a1a;
 }
 
 /* --- Typography --------------------------------------------------------- */
 
+.md-typeset {
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
 .md-typeset h1 {
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--kuali-ink);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1 {
+  color: #F5F7FA;
 }
 
 .md-typeset h2 {
   font-weight: 700;
   letter-spacing: -0.015em;
-  margin-top: 2.5em;
+  margin-top: 2.6em;
+  position: relative;
+  padding-left: 0.85em;
+}
+
+/* Caveat-free "tick mark" accent before h2, drawn in CSS. */
+.md-typeset h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.42em;
+  width: 0.3em;
+  height: 0.72em;
+  background: var(--kuali-wintergreen);
+  border-radius: 2px;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2::before {
+  background: #34D4A5;
 }
 
 .md-typeset h3 {
@@ -61,10 +164,85 @@
   letter-spacing: -0.01em;
 }
 
+/* "Eyebrow" utility used in the hero — small caps, brand accent. */
+.kuali-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--kuali-wintergreen-accessible);
+  margin-bottom: 0.6rem;
+}
+
+[data-md-color-scheme="slate"] .kuali-eyebrow {
+  color: #34D4A5;
+}
+
+/* Caveat handwriting accent — used *only* for short marginalia. Never
+ * for primary content, so low-fidelity script font is never blocking
+ * comprehension of anything important. */
+.kuali-handwritten {
+  font-family: "Caveat", "Roboto", cursive;
+  font-weight: 600;
+  font-size: 1.35em;
+  color: var(--kuali-flare-accessible);
+  line-height: 1;
+}
+
+[data-md-color-scheme="slate"] .kuali-handwritten {
+  color: var(--kuali-torch);
+}
+
 /* --- Header / nav tabs -------------------------------------------------- */
 
 .md-header {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.md-header__inner {
+  display: flex;
+  align-items: center;
+}
+
+/* Keep drawer hamburger on the left at all breakpoints. */
+.md-header__button[for="__drawer"] {
+  display: inline-flex !important;
+  order: -1;
+  margin: 0;
+  padding-right: 0.5rem;
+}
+
+.md-header__button.md-logo {
+  order: 0;
+  margin: 0;
+  padding: 0.4rem 0.25rem 0.4rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.md-header__title {
+  margin-left: 0.6rem;
+  padding-left: 0.8rem;
+  position: relative;
+}
+
+.md-header__title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 1.1rem;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.5rem;
+  width: auto;
 }
 
 .md-tabs {
@@ -74,12 +252,16 @@
 .md-tabs__link {
   font-size: 0.78rem;
   font-weight: 500;
-  opacity: 0.85;
+  opacity: 1;
+  color: #ffffff;
 }
 
 .md-tabs__link:hover,
 .md-tabs__link--active {
   opacity: 1;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 /* --- Buttons ------------------------------------------------------------ */
@@ -88,47 +270,270 @@
   border-radius: 999px;
   font-weight: 600;
   letter-spacing: 0.01em;
-  padding: 0.55em 1.4em;
+  padding: 0.65em 1.55em;
   border-width: 2px;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
 }
 
 .md-typeset .md-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 181, 134, 0.25);
+  box-shadow: 0 10px 22px rgba(0, 112, 77, 0.22);
 }
 
 .md-typeset .md-button--primary {
-  background: var(--kuali-wintergreen);
-  border-color: var(--kuali-wintergreen);
+  background: var(--kuali-wintergreen-accessible);
+  border-color: var(--kuali-wintergreen-accessible);
   color: #ffffff;
 }
 
 .md-typeset .md-button--primary:hover {
-  background: var(--kuali-wintergreen-dark);
-  border-color: var(--kuali-wintergreen-dark);
+  background: var(--kuali-wintergreen-accessible-dark);
+  border-color: var(--kuali-wintergreen-accessible-dark);
   color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .md-button--primary {
+  background: #00A376;
+  border-color: #00A376;
+  color: #031410;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .md-button--primary:hover {
+  background: #34D4A5;
+  border-color: #34D4A5;
 }
 
 /* --- Home page hero ----------------------------------------------------- */
 
-.md-typeset h1:first-of-type {
-  font-size: 2.6rem;
-  background: linear-gradient(135deg, var(--kuali-wintergreen) 0%, var(--kuali-glacier) 100%);
+.md-typeset .kuali-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: 1rem;
+}
+
+.md-typeset .kuali-hero > * {
+  min-width: 0;
+}
+
+.md-typeset .kuali-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin: 0 0 0.6rem;
+  color: var(--kuali-ink);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .kuali-hero h1 {
+  color: #F5F7FA;
+}
+
+/* Highlight the brand word inside the H1 — gradient *fill* kept under a
+ * color fallback so the H1 itself stays readable if the gradient fails. */
+.kuali-hero-mark {
+  background: linear-gradient(135deg, var(--kuali-wintergreen-accessible) 0%, var(--kuali-glacier-accessible) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: var(--kuali-wintergreen-accessible);
+}
+
+[data-md-color-scheme="slate"] .kuali-hero-mark {
+  background: linear-gradient(135deg, #34D4A5 0%, #7BD6E8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #34D4A5;
+}
+
+.kuali-hero-lede {
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--kuali-ink-soft);
+  max-width: 36ch;
+  margin: 0 0 1.4rem;
+}
+
+[data-md-color-scheme="slate"] .kuali-hero-lede {
+  color: #C2CBD7;
+}
+
+.kuali-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  position: relative;
+}
+
+.kuali-hero-hint {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 1.55rem;
+  color: var(--kuali-flare-accessible);
+  line-height: 1;
+  transform: rotate(-4deg);
+  white-space: nowrap;
+}
+
+[data-md-color-scheme="slate"] .kuali-hero-hint {
+  color: var(--kuali-torch);
+}
+
+.kuali-hero-hint::before {
+  content: "↖ ";
+  display: inline-block;
+  transform: translateY(-2px);
+}
+
+/* Legacy badge support (left in place for safety). */
+.kuali-hero-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  background: linear-gradient(135deg, var(--kuali-torch) 0%, var(--kuali-flare) 100%);
+  -webkit-text-fill-color: #1a1a1a;
+  padding: 0.28em 0.85em;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(239, 108, 0, 0.35);
+  vertical-align: middle;
+}
+
+/* Faux terminal — hero right column. Purely decorative, but readable. */
+.kuali-terminal {
+  background: #0E1C2B;
+  border-radius: 14px;
+  box-shadow:
+    0 24px 60px rgba(15, 40, 70, 0.22),
+    0 2px 0 rgba(255, 255, 255, 0.04) inset;
+  overflow: hidden;
+  font-family: "Roboto Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.78rem;
+  color: #E6EEF7;
+  position: relative;
+  transform: rotate(0.6deg);
+  transition: transform 0.3s ease;
+}
+
+.kuali-terminal:hover {
+  transform: rotate(0deg) translateY(-2px);
+}
+
+.kuali-terminal__chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.85rem;
+  background: #16273A;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.kuali-terminal__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #3C4B5E;
+}
+
+.kuali-terminal__dot--r { background: #FF5F57; }
+.kuali-terminal__dot--y { background: #FEBC2E; }
+.kuali-terminal__dot--g { background: #28C840; }
+
+.kuali-terminal__title {
+  margin-left: 0.6rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: rgba(230, 238, 247, 0.6);
+  text-transform: uppercase;
+}
+
+.kuali-terminal__body {
+  padding: 1rem 1.1rem 1.2rem;
+  line-height: 1.65;
+}
+
+.kuali-terminal__body .tk-prompt { color: #34D4A5; user-select: none; margin-right: 0.5ch; }
+.kuali-terminal__body .tk-cmd    { color: #E6EEF7; }
+.kuali-terminal__body .tk-flag   { color: #FFC070; }
+.kuali-terminal__body .tk-string { color: #7BD6E8; }
+.kuali-terminal__body .tk-dim    { color: rgba(230, 238, 247, 0.55); }
+.kuali-terminal__body .tk-ok     { color: #7BE3C1; font-weight: 600; }
+
+.kuali-terminal__body .tk-caret {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1.05em;
+  vertical-align: -0.15em;
+  background: #E6EEF7;
+  margin-left: 0.25ch;
+  animation: kuali-caret 1s step-end infinite;
+}
+
+@keyframes kuali-caret {
+  50% { opacity: 0; }
+}
+
+/* Collapse hero to single column on tablet/mobile. */
+@media (max-width: 960px) {
+  .md-typeset .kuali-hero {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .kuali-terminal {
+    transform: rotate(0);
+    font-size: 0.76rem;
+  }
+  .kuali-hero-hint { display: none; }
+}
+
+/* Hero entrance animation — one orchestrated reveal. */
+@media (prefers-reduced-motion: no-preference) {
+  .kuali-hero > *        { animation: kuali-rise 0.7s cubic-bezier(.2,.8,.2,1) both; }
+  .kuali-hero > *:nth-child(1) { animation-delay: 0.00s; }
+  .kuali-hero > *:nth-child(2) { animation-delay: 0.12s; }
+}
+
+@keyframes kuali-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Dark-mode logo handling ------------------------------------------- */
+
+[data-md-color-scheme="slate"] img.kuali-wordmark {
+  content: url("../assets/kuali-logo-white.png");
 }
 
 /* --- Feature card grid (home page) ------------------------------------- */
 
 .md-typeset .grid.cards > ul > li,
 .md-typeset .grid > .card {
-  border-radius: 12px;
+  border-radius: var(--kuali-radius-lg);
   border: 1px solid var(--md-default-fg-color--lightest);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
   position: relative;
   overflow: hidden;
+  padding: 1.4rem 1.3rem 1.5rem;
+  background: var(--md-default-bg-color--light, #ffffff);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li {
+  background: #13222F;
 }
 
 .md-typeset .grid.cards > ul > li::before {
@@ -137,11 +542,12 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 5px;
   background: var(--kuali-wintergreen);
+  transition: height 0.25s ease;
 }
 
-/* Rotate accent color per card so the home-page grid showcases the palette */
+/* Rotate accent color per card so the home grid showcases the palette. */
 .md-typeset .grid.cards > ul > li:nth-child(6n+1)::before { background: var(--kuali-wintergreen); }
 .md-typeset .grid.cards > ul > li:nth-child(6n+2)::before { background: var(--kuali-glacier); }
 .md-typeset .grid.cards > ul > li:nth-child(6n+3)::before { background: var(--kuali-torch); }
@@ -150,99 +556,243 @@
 .md-typeset .grid.cards > ul > li:nth-child(6n+6)::before { background: var(--kuali-magma); }
 
 .md-typeset .grid.cards > ul > li:nth-child(6n+1) .twemoji,
-.md-typeset .grid.cards > ul > li:nth-child(6n+1) .md-icon { color: var(--kuali-wintergreen); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+1) .md-icon { color: var(--kuali-wintergreen-accessible); }
 .md-typeset .grid.cards > ul > li:nth-child(6n+2) .twemoji,
-.md-typeset .grid.cards > ul > li:nth-child(6n+2) .md-icon { color: var(--kuali-glacier); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+2) .md-icon { color: var(--kuali-glacier-accessible); }
 .md-typeset .grid.cards > ul > li:nth-child(6n+3) .twemoji,
-.md-typeset .grid.cards > ul > li:nth-child(6n+3) .md-icon { color: var(--kuali-torch); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+3) .md-icon { color: var(--kuali-flare-accessible); }
 .md-typeset .grid.cards > ul > li:nth-child(6n+4) .twemoji,
-.md-typeset .grid.cards > ul > li:nth-child(6n+4) .md-icon { color: var(--kuali-popsicle); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+4) .md-icon { color: var(--kuali-popsicle-accessible); }
 .md-typeset .grid.cards > ul > li:nth-child(6n+5) .twemoji,
-.md-typeset .grid.cards > ul > li:nth-child(6n+5) .md-icon { color: var(--kuali-frost); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+5) .md-icon { color: var(--kuali-glacier-accessible); }
 .md-typeset .grid.cards > ul > li:nth-child(6n+6) .twemoji,
-.md-typeset .grid.cards > ul > li:nth-child(6n+6) .md-icon { color: var(--kuali-magma); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+6) .md-icon { color: var(--kuali-magma-accessible); }
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+1) .twemoji,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+1) .md-icon { color: #34D4A5; }
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+2) .twemoji,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+2) .md-icon { color: #7BD6E8; }
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+3) .twemoji,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+3) .md-icon { color: var(--kuali-torch); }
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+4) .twemoji,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+4) .md-icon { color: #B69AE0; }
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+5) .twemoji,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+5) .md-icon { color: var(--kuali-frost); }
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+6) .twemoji,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:nth-child(6n+6) .md-icon { color: #E780C4; }
 
 .md-typeset .grid.cards > ul > li:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(15, 40, 70, 0.12);
+  transform: translateY(-4px);
+  box-shadow: var(--kuali-shadow-raise);
   border-color: transparent;
+  cursor: pointer;
+}
+
+.md-typeset .grid.cards > ul > li:hover::before {
+  height: 7px;
+}
+
+/* Make the whole card clickable; keep text-selection + inline links usable. */
+.md-typeset .grid.cards > ul > li {
+  position: relative;
+}
+
+.md-typeset .grid.cards > ul > li > p:last-child > a:only-child::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.md-typeset .grid.cards > ul > li > :not(:last-child) {
+  position: relative;
+  z-index: 2;
+}
+
+.md-typeset .grid.cards > ul > li > p:last-child {
+  position: static;
 }
 
 .md-typeset .grid.cards .twemoji.lg,
 .md-typeset .grid.cards svg.lg {
-  height: 1.8em;
-  width: 1.8em;
+  height: 2em;
+  width: 2em;
+  padding: 0.4em;
+  border-radius: 12px;
+  background: rgba(0, 181, 134, 0.08);
+  margin-bottom: 0.5rem;
+}
+
+/* Tint the icon halo per-card to match the accent bar. */
+.md-typeset .grid.cards > ul > li:nth-child(6n+2) .twemoji.lg,
+.md-typeset .grid.cards > ul > li:nth-child(6n+2) svg.lg { background: rgba(52, 107, 167, 0.10); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+3) .twemoji.lg,
+.md-typeset .grid.cards > ul > li:nth-child(6n+3) svg.lg { background: rgba(255, 166, 40, 0.14); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+4) .twemoji.lg,
+.md-typeset .grid.cards > ul > li:nth-child(6n+4) svg.lg { background: rgba(116, 86, 170, 0.12); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+5) .twemoji.lg,
+.md-typeset .grid.cards > ul > li:nth-child(6n+5) svg.lg { background: rgba(87, 199, 222, 0.16); }
+.md-typeset .grid.cards > ul > li:nth-child(6n+6) .twemoji.lg,
+.md-typeset .grid.cards > ul > li:nth-child(6n+6) svg.lg { background: rgba(200, 51, 151, 0.12); }
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards .twemoji.lg,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards svg.lg {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* --- "Why Connector" pitch strip (home page) ---------------------------- */
+
+.kuali-pitch {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 2.5rem 0 1.5rem;
+}
+
+@media (max-width: 720px) {
+  .kuali-pitch { grid-template-columns: 1fr; }
+}
+
+.kuali-pitch__item {
+  padding: 1.1rem 1.15rem 1.2rem;
+  border-radius: var(--kuali-radius-md);
+  background: rgba(0, 112, 77, 0.05);
+  border-left: 3px solid var(--kuali-wintergreen);
+}
+
+.kuali-pitch__item:nth-child(2) {
+  background: rgba(52, 107, 167, 0.05);
+  border-left-color: var(--kuali-glacier);
+}
+
+.kuali-pitch__item:nth-child(3) {
+  background: rgba(239, 108, 0, 0.05);
+  border-left-color: var(--kuali-flare);
+}
+
+[data-md-color-scheme="slate"] .kuali-pitch__item {
+  background: rgba(52, 212, 165, 0.08);
+}
+
+[data-md-color-scheme="slate"] .kuali-pitch__item:nth-child(2) {
+  background: rgba(123, 214, 232, 0.08);
+}
+
+[data-md-color-scheme="slate"] .kuali-pitch__item:nth-child(3) {
+  background: rgba(255, 166, 40, 0.08);
+}
+
+.kuali-pitch__title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0 0 0.2rem;
+  letter-spacing: -0.005em;
+}
+
+.kuali-pitch__body {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--kuali-ink-soft);
+}
+
+[data-md-color-scheme="slate"] .kuali-pitch__body {
+  color: #C2CBD7;
+}
+
+/* --- Home: "not sure if this is for you" re-skin ------------------------ */
+
+.kuali-callout {
+  position: relative;
+  margin: 2.5rem 0 1rem;
+  padding: 1.3rem 1.5rem 1.4rem 3.5rem;
+  border-radius: var(--kuali-radius-lg);
+  background:
+    linear-gradient(135deg, rgba(255, 166, 40, 0.08) 0%, rgba(239, 108, 0, 0.06) 100%);
+  border: 1px solid rgba(239, 108, 0, 0.22);
+}
+
+.kuali-callout::before {
+  content: "";
+  position: absolute;
+  left: 1.1rem;
+  top: 1.3rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: var(--kuali-flare-accessible);
+  background-image:
+    radial-gradient(circle at center, #ffffff 0 0.12rem, transparent 0.13rem),
+    radial-gradient(circle at center, #ffffff 0 0.12rem, transparent 0.13rem);
+  background-position: center 0.42rem, center 0.85rem;
+  background-size: 0.25rem 0.25rem, 0.25rem 0.8rem;
+  background-repeat: no-repeat;
+}
+
+.kuali-callout__title {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 1.45rem;
+  color: var(--kuali-flare-accessible);
+  line-height: 1;
+  margin: 0 0 0.35rem;
+}
+
+[data-md-color-scheme="slate"] .kuali-callout {
+  background: linear-gradient(135deg, rgba(255, 166, 40, 0.10) 0%, rgba(239, 108, 0, 0.08) 100%);
+  border-color: rgba(255, 166, 40, 0.3);
+}
+
+[data-md-color-scheme="slate"] .kuali-callout__title {
+  color: var(--kuali-torch);
 }
 
 /* --- Admonitions -------------------------------------------------------- */
 
 .md-typeset .admonition,
 .md-typeset details {
-  border-radius: 8px;
+  border-radius: 10px;
   border-left-width: 4px;
   border-top: none;
   border-right: none;
   border-bottom: none;
-  box-shadow: 0 1px 3px rgba(15, 40, 70, 0.06);
+  box-shadow: var(--kuali-shadow-soft);
 }
 
 .md-typeset .admonition.tip,
-.md-typeset details.tip {
-  border-left-color: var(--kuali-wintergreen);
-}
+.md-typeset details.tip { border-left-color: var(--kuali-wintergreen); }
 .md-typeset .tip > .admonition-title::before,
-.md-typeset .tip > summary::before {
-  background-color: var(--kuali-wintergreen);
-}
+.md-typeset .tip > summary::before { background-color: var(--kuali-wintergreen); }
 
 .md-typeset .admonition.note,
-.md-typeset details.note {
-  border-left-color: var(--kuali-glacier);
-}
+.md-typeset details.note { border-left-color: var(--kuali-glacier); }
 .md-typeset .note > .admonition-title::before,
-.md-typeset .note > summary::before {
-  background-color: var(--kuali-glacier);
-}
+.md-typeset .note > summary::before { background-color: var(--kuali-glacier); }
 
 .md-typeset .admonition.warning,
-.md-typeset details.warning {
-  border-left-color: var(--kuali-torch);
-}
+.md-typeset details.warning { border-left-color: var(--kuali-torch); }
 .md-typeset .warning > .admonition-title::before,
-.md-typeset .warning > summary::before {
-  background-color: var(--kuali-torch);
-}
+.md-typeset .warning > summary::before { background-color: var(--kuali-torch); }
 
 .md-typeset .admonition.danger,
 .md-typeset details.danger,
 .md-typeset .admonition.failure,
-.md-typeset details.failure {
-  border-left-color: var(--kuali-chili);
-}
+.md-typeset details.failure { border-left-color: var(--kuali-chili); }
 .md-typeset .danger > .admonition-title::before,
 .md-typeset .danger > summary::before,
 .md-typeset .failure > .admonition-title::before,
-.md-typeset .failure > summary::before {
-  background-color: var(--kuali-chili);
-}
+.md-typeset .failure > summary::before { background-color: var(--kuali-chili); }
 
 .md-typeset .admonition.info,
-.md-typeset details.info {
-  border-left-color: var(--kuali-frost);
-}
+.md-typeset details.info { border-left-color: var(--kuali-frost); }
 .md-typeset .info > .admonition-title::before,
-.md-typeset .info > summary::before {
-  background-color: var(--kuali-frost);
-}
+.md-typeset .info > summary::before { background-color: var(--kuali-frost); }
 
 .md-typeset .admonition.example,
-.md-typeset details.example {
-  border-left-color: var(--kuali-popsicle);
-}
+.md-typeset details.example { border-left-color: var(--kuali-popsicle); }
 .md-typeset .example > .admonition-title::before,
-.md-typeset .example > summary::before {
-  background-color: var(--kuali-popsicle);
-}
+.md-typeset .example > summary::before { background-color: var(--kuali-popsicle); }
 
 /* --- Code blocks -------------------------------------------------------- */
 
@@ -261,37 +811,84 @@
 
 /* --- Links & inline ----------------------------------------------------- */
 
+/* WCAG 1.4.1: body links keep a persistent underline so color is not the
+ * sole indicator. Nav / button links are handled separately. */
 .md-typeset a {
-  text-decoration-color: transparent;
-  transition: text-decoration-color 0.15s ease;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(52, 107, 167, 0.45);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
 }
 
 .md-typeset a:hover {
   text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+}
+
+/* Strip the underline on decorative/button/tab links. */
+.md-typeset .md-button,
+.md-typeset .md-button:hover,
+.md-typeset .grid.cards > ul > li > p:last-child > a:only-child,
+.md-tabs__link,
+.md-nav__link,
+.md-footer__link,
+.md-footer-meta__inner a,
+.md-social__link,
+.md-header a {
+  text-decoration: none;
+}
+
+/* Inline card arrows (Quick start / Install / etc) — keep underline off so
+ * the clickable target spans the whole card. */
+.md-typeset .grid.cards > ul > li a {
+  text-decoration: none;
+}
+
+/* …but card body paragraph links (rare) should stay underlined. */
+.md-typeset .grid.cards > ul > li p:not(:last-child) a {
+  text-decoration: underline;
+  text-decoration-color: rgba(52, 107, 167, 0.45);
+  text-underline-offset: 3px;
 }
 
 /* --- Search ------------------------------------------------------------- */
 
 .md-search__input {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
 }
 
 .md-search__input::placeholder {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 /* --- Footer ------------------------------------------------------------- */
 
+.md-footer {
+  background: var(--kuali-glacier);
+}
+
 .md-footer-meta {
-  background: #0f2846;
+  background: #24518a; /* slightly darker Glacier */
 }
 
 .md-copyright {
-  opacity: 0.75;
+  opacity: 0.92;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.md-social__link {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .md-social__link:hover {
-  color: var(--kuali-wintergreen);
+  color: var(--kuali-frost);
+}
+
+.md-footer__link:hover,
+.md-footer__link:focus {
+  opacity: 1;
 }
 
 /* --- Tables ------------------------------------------------------------- */
@@ -309,16 +906,117 @@
   font-weight: 600;
 }
 
-/* --- Scrollbar highlight color on nav ---------------------------------- */
+.md-typeset table:not([class]) tr:nth-child(even) td {
+  background: rgba(52, 107, 167, 0.04);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tr:nth-child(even) td {
+  background: rgba(123, 214, 232, 0.04);
+}
+
+/* --- Nav / sidebar highlight ------------------------------------------- */
 
 .md-nav__link--active,
 .md-nav__link:focus,
 .md-nav__link:hover {
-  color: var(--kuali-wintergreen);
+  color: var(--kuali-wintergreen-accessible);
 }
 
 [data-md-color-scheme="slate"] .md-nav__link--active,
 [data-md-color-scheme="slate"] .md-nav__link:focus,
 [data-md-color-scheme="slate"] .md-nav__link:hover {
-  color: var(--kuali-frost);
+  color: #34D4A5;
+}
+
+/* --- Focus-visible (WCAG 2.4.7 + 1.4.11) ------------------------------- */
+
+a:focus-visible,
+button:focus-visible,
+.md-button:focus-visible,
+.md-nav__link:focus-visible,
+.md-tabs__link:focus-visible,
+.md-search__input:focus-visible,
+.md-footer__link:focus-visible,
+.md-social__link:focus-visible,
+summary:focus-visible {
+  outline: none;
+  box-shadow: var(--kuali-focus-ring);
+  border-radius: 6px;
+}
+
+.md-typeset .md-button:focus-visible {
+  border-radius: 999px;
+}
+
+/* Cards are fully clickable via a stretched ::after on the last link;
+ * focus ring spans the whole card. */
+.md-typeset .grid.cards > ul > li:focus-within {
+  outline: 3px solid var(--kuali-glacier-accessible);
+  outline-offset: 3px;
+  border-color: transparent;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:focus-within {
+  outline-color: #7BD6E8;
+}
+
+/* WCAG 2.4.11 Focus Not Obscured: sticky header + announce bar stack; land
+ * anchor-target scrolling below that so the focused element is visible. */
+html {
+  scroll-padding-top: 6rem;
+}
+
+/* Respect reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .md-button,
+  .md-typeset .md-button:hover,
+  .md-typeset .grid.cards > ul > li,
+  .md-typeset .grid.cards > ul > li:hover,
+  .kuali-terminal,
+  .kuali-terminal:hover,
+  .kuali-hero > * {
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+  .kuali-terminal__body .tk-caret {
+    animation: none;
+  }
+}
+
+/* --- Forced-colors (Windows High Contrast) ----------------------------- */
+
+@media (forced-colors: active) {
+  .md-typeset .kuali-hero h1,
+  .kuali-hero-mark {
+    background: none;
+    -webkit-text-fill-color: CanvasText;
+    color: CanvasText;
+  }
+  .kuali-hero-badge,
+  .kuali-preview-badge,
+  .kuali-hero-hint,
+  .kuali-handwritten,
+  .kuali-callout__title {
+    background: Canvas;
+    color: CanvasText;
+    -webkit-text-fill-color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+  .md-banner {
+    background: Canvas;
+    color: CanvasText;
+  }
+  .md-typeset .grid.cards > ul > li::before,
+  .kuali-callout::before {
+    display: none;
+  }
+  .kuali-terminal {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+  body {
+    background-image: none;
+  }
 }

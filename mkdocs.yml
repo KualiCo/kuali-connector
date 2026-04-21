@@ -8,8 +8,9 @@ copyright: Copyright &copy; Kuali, Inc.
 
 theme:
   name: material
-  logo: assets/logo.svg
+  logo: assets/kuali-logo-white.png
   favicon: assets/favicon.png
+  custom_dir: overrides
   font:
     text: Roboto
     code: Roboto Mono
@@ -110,6 +111,7 @@ nav:
   - Support: support.md
 
 extra:
+  generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kualico/kuali-connector

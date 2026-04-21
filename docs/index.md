@@ -4,14 +4,49 @@ hide:
   - toc
 ---
 
-# Kuali Connector
+<div class="kuali-hero" markdown>
 
-**A small command-line tool that moves data between your computer and Kuali.** Download and reconcile transactions, pull reports, automate approvals — without logging into the web app every time.
+<div class="kuali-hero-copy" markdown>
+
+<span class="kuali-eyebrow">Kuali Connector · Preview</span>
+
+# Move data between your computer and <span class="kuali-hero-mark">Kuali</span>, from the terminal.
+
+<p class="kuali-hero-lede">
+A small command-line tool that downloads and reconciles transactions, pulls reports, and automates approvals — without logging into the web app every time.
+</p>
+
+<div class="kuali-hero-actions" markdown>
 
 [Get started in 5 minutes :material-arrow-right:](getting-started.md){ .md-button .md-button--primary }
-[Download latest release :material-download:](https://github.com/kualico/kuali-connector/releases/latest){ .md-button }
+[Download latest :material-download:](https://github.com/kualico/kuali-connector/releases/latest){ .md-button }
 
----
+<span class="kuali-hero-hint" aria-hidden="true">start here</span>
+
+</div>
+
+</div>
+
+<aside class="kuali-terminal" aria-label="Example terminal session using the Kuali Connector"><div class="kuali-terminal__chrome" aria-hidden="true"><span class="kuali-terminal__dot kuali-terminal__dot--r"></span><span class="kuali-terminal__dot kuali-terminal__dot--y"></span><span class="kuali-terminal__dot kuali-terminal__dot--g"></span><span class="kuali-terminal__title">~/kuali</span></div><div class="kuali-terminal__body"><div><span class="tk-prompt">$</span><span class="tk-cmd">kuali login</span></div><div><span class="tk-dim">Opening your browser… signed in as j.garcia@example.edu ✓</span></div><div>&nbsp;</div><div><span class="tk-prompt">$</span><span class="tk-cmd">kuali reports export</span> <span class="tk-flag">--id</span> <span class="tk-string">"Q1-grants"</span> <span class="tk-flag">--out</span> <span class="tk-string">./out.csv</span></div><div><span class="tk-dim">Exporting 1,248 rows…</span></div><div><span class="tk-ok">done</span> <span class="tk-dim">→ out.csv (312 KB) in 4.2s</span></div><div>&nbsp;</div><div><span class="tk-prompt">$</span><span class="tk-cmd">_</span><span class="tk-caret" aria-hidden="true"></span></div></div></aside>
+
+</div>
+
+<section class="kuali-pitch" aria-label="What the Connector is for">
+<div class="kuali-pitch__item">
+<p class="kuali-pitch__title">Routine work, one command</p>
+<p class="kuali-pitch__body">Exports, reports, reconciliations — the tasks you run every week, done in seconds instead of clicks.</p>
+</div>
+<div class="kuali-pitch__item">
+<p class="kuali-pitch__title">Built for non-developers</p>
+<p class="kuali-pitch__body">If you can paste a line into Terminal or PowerShell, you're ready. No install experience required.</p>
+</div>
+<div class="kuali-pitch__item">
+<p class="kuali-pitch__title">Safe by default</p>
+<p class="kuali-pitch__body">Uses your campus single sign-on. Your password never touches the Connector — ever.</p>
+</div>
+</section>
+
+## Pick your path
 
 <div class="grid cards" markdown>
 
@@ -65,16 +100,17 @@ hide:
 
 </div>
 
----
-
 ## What is the Connector?
 
 The **Kuali Connector** is a small program you run on your own computer. It talks to your institution's Kuali system on your behalf — so routine tasks that used to take several minutes of clicking can happen with a single command.
 
 You don't need to be a developer to use it. If you can copy and paste a line into Terminal or PowerShell, you can use the Connector.
 
-!!! tip "Not sure if this is for you?"
+<div class="kuali-callout" role="note" markdown>
+<p class="kuali-callout__title">Not sure if this is for you?</p>
 
-    If you regularly export data from Kuali, run the same reports on a schedule, or move information between Kuali and another system (Excel, your SIS, a shared drive), the Connector will save you time.
+If you regularly export data from Kuali, run the same reports on a schedule, or move information between Kuali and another system (Excel, your SIS, a shared drive), the Connector will save you time.
 
-    If you only log into Kuali occasionally, you probably don't need it — the web app is fine.
+If you only log into Kuali occasionally, you probably don't need it — the web app is fine.
+
+</div>
