@@ -389,7 +389,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1rem;
+  gap: 0.75rem 1.4rem;
   position: relative;
   margin-top: 2.6rem; /* leave vertical room for the "start here" hint */
 }
@@ -713,6 +713,19 @@ body {
   .kuali-chat {
     transform: rotate(0);
     font-size: 0.76rem;
+  }
+}
+
+@media (max-width: 600px) {
+  /* On narrow screens the hero CTAs stack — give them proper breathing room
+   * so the primary and secondary buttons don't read as a single block. */
+  .kuali-hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .kuali-hero-actions .md-button {
+    margin: 0; /* override Material's default button margin in stack mode */
   }
 }
 
