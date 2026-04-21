@@ -1,6 +1,6 @@
 # MCP tool reference
 
-The Connector exposes **94 resource tools** plus **3 connection-management tools** to any AI client that speaks the [Model Context Protocol](https://modelcontextprotocol.io). When you wire a client up with `kuali mcp setup`, every tool listed below becomes callable from inside a conversation.
+The Connector exposes **91 resource tools** plus **3 connection-management tools** (94 total) to any AI client that speaks the [Model Context Protocol](https://modelcontextprotocol.io). When you wire a client up with `kuali mcp setup`, every tool listed below becomes callable from inside a conversation.
 
 Each tool has two annotations that AI clients use to decide how to surface them:
 
@@ -11,6 +11,9 @@ When a tool is neither read-only nor destructive (create, update, submit, approv
 
 !!! tip "Filtering the tool list"
     Run the Connector with `--tools read-only` to register **only** the read-only tools. Mutations and destructive tools are hidden from the client entirely. See [Read-only mode](../guides/read-only-mode.md).
+
+!!! warning "Tools see only what your Kuali user sees"
+    Every tool runs as the Kuali user who owns the API key. The server enforces that user's permissions — tools don't escalate, and the Connector doesn't cache or bypass anything. **If you can't see an app, document, or user in the Kuali web UI, the assistant can't see them via these tools either.** Admin-only operations (user management, audit log, workflow bypass) require an admin's key. To scope the assistant down further, create a low-privilege Kuali user and issue an API key for that user — the AI assistant will only ever see what that user would see.
 
 ---
 
@@ -151,9 +154,9 @@ Always registered, regardless of `--tools` mode.
 
 | Tool | Purpose | Flags |
 |---|---|---|
-| `kuali_permissions_list` | List permissions on an app. | read-only |
-| `kuali_permissions_get` | Get permission details by label. | read-only |
-| `kuali_permissions_grant` | Grant a permission to a user or group. | mutation |
+| `kuali_permissions_list` | List policy groups, identities, and allowed actions for an app. | read-only |
+| `kuali_permissions_get` | Check what permissions a specific user has on an app. | read-only |
+| `kuali_permissions_grant` | Grant a user permission to create and submit documents on an app. | mutation |
 
 ## Audit
 
@@ -190,6 +193,7 @@ Always registered, regardless of `--tools` mode.
 | `kuali_summary` | Instance overview with counts and health. | read-only |
 | `kuali_doctor` | Run six diagnostic checks. | read-only |
 | `kuali_smoke` | Run a 7-step end-to-end smoke test. | mutation (creates and deletes test data) |
+| `kuali_run` | Escape hatch — run any `kuali` CLI command by name. Useful for flag combinations not covered by the dedicated tools. | mutation |
 
 ---
 
@@ -211,8 +215,8 @@ Always registered, regardless of `--tools` mode.
 | Export | 3 | 3 | 0 | 0 |
 | Import | 1 | 0 | 1 | 0 |
 | Files | 2 | 1 | 1 | 0 |
-| Utility | 3 | 2 | 1 | 0 |
+| Utility | 4 | 2 | 2 | 0 |
 | Connection management | 3 | 3 | 0 | 0 |
-| **Total** | **97** | **47** | **41** | **7** (+ `kuali_smoke` which cleans up after itself) |
+| **Total** | **94** | **45** | **42** | **7** (+ `kuali_smoke`, which cleans up after itself) |
 
-Run `kuali mcp` with `--tools read-only` and you'll see the 47 read-only tools only.
+Run `kuali mcp` with `--tools read-only` and you'll see only the read-only tools.

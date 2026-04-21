@@ -4,7 +4,7 @@ By the end of this page you'll have the Kuali Connector installed, connected to 
 
 !!! tip "What you'll need"
     - A Kuali instance URL (for example, `https://yourschool.kualibuild.com`)
-    - A Kuali API key — **Settings → API Keys** in the Kuali web UI
+    - A Kuali API key — **Settings → API Keys** in the Kuali web UI. The key inherits your permissions, so **the Connector will only see what you can see**. If you're an admin, it sees admin things; if you're a reviewer, it sees what a reviewer sees.
     - An AI client you already use: [Claude Desktop](https://claude.ai/download), [Claude Code](https://www.anthropic.com/claude-code), Codex CLI, Gemini CLI, GitHub Copilot CLI, or VS Code with Copilot
 
 ---

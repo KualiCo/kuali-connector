@@ -10,7 +10,7 @@ Everything the Kuali Connector exposes, in both shapes.
 
 -   :material-tools:{ .lg .middle } **[MCP tools](mcp-tools.md)**
 
-    Every MCP tool your AI assistant can call — 97 total, grouped by resource, marked read-only or destructive.
+    Every MCP tool your AI assistant can call — 91 resource tools plus 3 connection-management tools (94 total), grouped by resource, marked read-only or destructive.
 
 </div>
 

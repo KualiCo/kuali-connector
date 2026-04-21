@@ -20,7 +20,7 @@ Then **fully quit Claude Desktop and reopen it**. On macOS, "quit" means Cmd+Q â
 kuali mcp verify
 ```
 
-This checks the config file path, binary path, permissions, and macOS quarantine flag. It'll also print the resolved `mcpServers.kuali` entry so you can double-check it.
+This checks the config file path, the registered `kuali` server entry, the binary path and executable bit, the macOS quarantine flag, whether the API key resolves for your profile, and whether the binary can actually run (`kuali version`).
 
 Inside Claude, a slider icon in the composer shows that tools are available. Click it to see the list of `kuali_*` tools.
 

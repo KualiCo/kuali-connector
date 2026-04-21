@@ -10,6 +10,9 @@ The Connector needs two pieces of information before it can do anything useful: 
 !!! info "API key, not your password"
     The Connector never handles your Kuali password. An API key is a signed token you can revoke any time from the same screen you created it on.
 
+!!! warning "You're limited to what your Kuali user can see"
+    The API key the Connector uses carries exactly the permissions of the user that created it — nothing more. If your user account can't see an app, a document, or a user in the Kuali web UI, the Connector can't see it either, and neither can your AI assistant. To narrow the assistant's reach, issue an API key for a Kuali user with tighter permissions rather than your admin account.
+
 ## 1. Save the instance URL
 
 ```bash
@@ -38,7 +41,7 @@ You'll be prompted for the API key. The key is written to your OS keychain (macO
 kuali doctor --profile myschool
 ```
 
-`doctor` runs six checks: config exists, URL is reachable, API key works, GraphQL responds, user identity resolves, and the Connector is up to date. Any failure gives you a specific remediation step.
+`doctor` runs six checks: config file is readable, API URL is configured, tenant is set (warning only), API key is stored, the instance is reachable over HTTP, and the key is accepted by the GraphQL API. Any failure gives you a specific remediation step.
 
 A quick smoke test:
 

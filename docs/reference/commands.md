@@ -2,6 +2,9 @@
 
 Every CLI capability the Connector exposes. Same binary that powers the [MCP server](mcp-tools.md) — every tool your AI assistant can call has a direct CLI counterpart.
 
+!!! warning "You're limited to what your Kuali user can see"
+    Every command authenticates with an API key that inherits the permissions of the Kuali user who created it. The server enforces those permissions — the Connector doesn't relax or bypass them. **If you can't see an app, document, or user in the Kuali web UI, the CLI can't see it either.** Admin-only actions (user management, audit, workflow bypass) require an admin's key. When a command returns "not found" or "forbidden," that's usually a permissions issue, not a CLI bug — confirm by signing in to the web UI as the same user.
+
 The general shape:
 
 ```
@@ -76,13 +79,18 @@ kuali documents create     --form <app-id> --data <json|@file> \
                            [--submit] [--page <page-id>] [--action <action-id>]
 kuali documents update     <doc-id> --data <json|@file> [--comment <txt>]
 kuali documents submit     <doc-id> [--action <action-id>] [--data <json>] \
-                           [--status <status>] [--comment <txt>]
-kuali documents approve    <doc-id> [--action <action-id>] [--comment <txt>]
+                           [--status <status>] [--comment <txt>] [--timezone <tz>]
+kuali documents approve    <doc-id> [--action <action-id>] [--data <json>] \
+                           [--comment <txt>] [--timezone <tz>]
 kuali documents sendback   <doc-id> [--action <action-id>] [--step <step-id>] \
                            [--comment <txt>]
 kuali documents duplicate  <doc-id> [--timezone <tz>]
 kuali documents delete     <doc-id>
 ```
+
+`--status` values on `submit`: `completed` (default), `approved`, `rejected`, `task completed`, `acknowledged`, `sendback`. Default `--timezone` is `America/Denver` on `submit`/`approve`/`create`, and `America/New_York` on `duplicate`.
+
+When `--action` and `--data` are omitted on `submit`/`approve`/`sendback`, they are auto-discovered from the document.
 
 ## Forms
 
@@ -129,21 +137,26 @@ kuali groups import-members      <group-id> --data @members.json
 ```bash
 kuali workflows status     <doc-id>
 kuali workflows actions    [--app <app-id>]
-kuali workflows watch      <doc-id> [--timeout 5m]
-kuali workflows bypass     <doc-id> [--comment <txt>]
-kuali workflows sendback   <doc-id> [--step <step-id>] [--comment <txt>]
-kuali workflows retry      <step-id>  --app <app-id> --document <doc-id>
-kuali workflows skip       <step-id>  --app <app-id> --document <doc-id>
+kuali workflows watch      <doc-id> [--interval 5s] [--timeout 1h]
+kuali workflows bypass     <doc-id>  --comment <txt>
+kuali workflows sendback   <doc-id>  --step <step-id> --from-action <action-id>
+kuali workflows retry      <step-id> [--app <app-id>] [--document <doc-id>]
+kuali workflows skip       <step-id> [--app <app-id>] [--document <doc-id>]
 kuali workflows reassign   <step-id>  --app <app-id> --document <doc-id> --user <user-id>
-kuali workflows create     --app <app-id> --form <form-id> --name <name> --trigger <onSubmit|...>
-kuali workflows get        <workflow-id>
-kuali workflows list       --app <app-id>
-kuali workflows trigger    <workflow-id> --document <doc-id>
-kuali workflows executions <workflow-id>
-kuali workflows toggle     <workflow-id> [--enable|--disable]
-kuali workflows duplicate  <workflow-id>
+kuali workflows create     --app <app-id> --form <form-id> --name <name> [--trigger onSubmit|manual] [--page <page-id>]
+kuali workflows get        <workflow-id> --app <app-id>
+kuali workflows list       <app-id>
+kuali workflows trigger    --workflow <workflow-id> --document <doc-id> [--timezone <tz>]
+kuali workflows executions <doc-id>
+kuali workflows toggle     <workflow-id> --enable|--disable
+kuali workflows duplicate  <workflow-id> [--name <name>]
 kuali workflows delete     <workflow-id>
 ```
+
+!!! note "Two flavors of sendback"
+    `kuali documents sendback` auto-discovers the current action ID and target step from the document, so it works with just `<doc-id>`. `kuali workflows sendback` is the admin variant — it takes explicit `--step` and `--from-action` IDs and does not auto-discover.
+
+`kuali workflows watch` exits `0` on approved/complete, `1` on denied/withdrawn/rejected/cancelled, `2` on timeout.
 
 ## Products
 
@@ -197,8 +210,8 @@ kuali integrations failures       [--limit N]
 
 ```bash
 kuali permissions list    --app <app-id>
-kuali permissions get     --app <app-id> --label <label>
-kuali permissions grant   --app <app-id> --user <user-id> --label <label>
+kuali permissions get     --app <app-id> --user <user-id>
+kuali permissions grant   --app <app-id> --user <user-id> --label <display-label>
 ```
 
 ## Files
@@ -225,7 +238,7 @@ kuali import csv <file|-> --app <app-id> \
 
 Column mapping is auto-detected by label (case-insensitive). `--dry-run` previews the mapping and parsed values without creating any documents. Pipe CSVs from stdin with `-` as the file argument.
 
-Supported gadgets on import: Text, Textarea, RichText, Email, Url, Number, Currency, LinearScale, TimePicker, Date, Boolean, Dropdown, Radios, Checkboxes, CountryDropdown, StateDropdown, LanguagesDropdown, UserTypeahead, GroupTypeahead, UserMultiselect, GroupMultiselect.
+Supported gadgets on import: Text, Textarea, RichText, Email, Url, PrivateData, Number, Currency, LinearScale, TimePicker, Date, DatePicker, Boolean, Checkboxes, Select, Radio, Radios, Dropdown, MultiSelect, CountryDropdown, StateDropdown, LanguagesDropdown, UserTypeahead, GroupTypeahead, UserMultiselect, GroupMultiselect, IntegrationTypeahead.
 
 ## Export
 

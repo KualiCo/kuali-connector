@@ -817,6 +817,288 @@ body {
   height: 7px;
 }
 
+/* --- "Is it secure?" — disclosure + ledger layout ---------------------- *
+ * Two columns, asymmetric weight: one prominent "read this one" notice on
+ * the left, a tight vertical ledger of baseline guarantees on the right.
+ * Replaces the old 6-up card grid where one long card was dragging the
+ * others into visual chaos. */
+
+.md-typeset .kuali-security {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+  margin: 1.2rem 0 1.6rem;
+}
+
+@media (max-width: 960px) {
+  .md-typeset .kuali-security {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+}
+
+/* --- Left: the disclosure card ---------------------------------------- */
+
+.kuali-security__notice {
+  position: relative;
+  padding: 1.7rem 1.6rem 1.8rem;
+  border-radius: var(--kuali-radius-lg);
+  background:
+    linear-gradient(180deg, rgba(255, 166, 40, 0.08) 0%, rgba(255, 166, 40, 0) 45%),
+    var(--md-default-bg-color--light, #ffffff);
+  border: 1px solid rgba(255, 166, 40, 0.32);
+  box-shadow: var(--kuali-shadow-soft);
+  overflow: hidden;
+}
+
+[data-md-color-scheme="slate"] .kuali-security__notice {
+  background:
+    linear-gradient(180deg, rgba(255, 166, 40, 0.12) 0%, rgba(255, 166, 40, 0) 45%),
+    #13222F;
+  border-color: rgba(255, 166, 40, 0.38);
+}
+
+.kuali-security__notice::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--kuali-torch) 0%, var(--kuali-flare) 100%);
+  border-radius: var(--kuali-radius-lg) var(--kuali-radius-lg) 0 0;
+}
+
+.kuali-security__notice-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.kuali-security__badge {
+  font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--kuali-flare-accessible);
+  background: rgba(255, 166, 40, 0.14);
+  padding: 0.35em 0.75em;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+[data-md-color-scheme="slate"] .kuali-security__badge {
+  color: var(--kuali-torch);
+  background: rgba(255, 166, 40, 0.18);
+}
+
+.kuali-security__notice-icon {
+  color: var(--kuali-flare-accessible);
+  display: inline-flex;
+}
+
+.kuali-security__notice-icon .twemoji,
+.kuali-security__notice-icon svg {
+  height: 1.8em;
+  width: 1.8em;
+  padding: 0.3em;
+  border-radius: 10px;
+  background: rgba(255, 166, 40, 0.14);
+}
+
+[data-md-color-scheme="slate"] .kuali-security__notice-icon {
+  color: var(--kuali-torch);
+}
+
+.md-typeset .kuali-security__notice h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0.1rem 0 0.8rem;
+  color: var(--kuali-ink);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .kuali-security__notice h3 {
+  color: #f3f4f6;
+}
+
+.md-typeset .kuali-security__notice p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin: 0 0 0.85rem;
+  color: var(--kuali-ink-soft);
+}
+
+.md-typeset .kuali-security__notice p:last-child {
+  margin-bottom: 0;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .kuali-security__notice p {
+  color: #c7d2df;
+}
+
+/* --- Right: the guarantee ledger -------------------------------------- */
+
+.kuali-security__ledger {
+  padding: 1.2rem 1.3rem 1.4rem;
+  border-radius: var(--kuali-radius-lg);
+  background: var(--md-default-bg-color--light, #ffffff);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  box-shadow: var(--kuali-shadow-soft);
+}
+
+[data-md-color-scheme="slate"] .kuali-security__ledger {
+  background: #13222F;
+}
+
+.md-typeset .kuali-security__ledger-title {
+  font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--kuali-wintergreen-accessible);
+  margin: 0 0 0.85rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px dashed var(--md-default-fg-color--lightest);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .kuali-security__ledger-title {
+  color: #34D4A5;
+}
+
+.md-typeset ul.kuali-security__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.md-typeset .kuali-security__row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0;
+}
+
+/* Neutralize Material's list-item pseudo-marker on custom lists. */
+.md-typeset .kuali-security__row::before {
+  display: none !important;
+}
+
+.kuali-security__row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kuali-security__row-icon .twemoji,
+.kuali-security__row-icon svg {
+  height: 1.25em;
+  width: 1.25em;
+  padding: 0.35em;
+  border-radius: 8px;
+  background: rgba(0, 181, 134, 0.10);
+  color: var(--kuali-wintergreen-accessible);
+}
+
+[data-md-color-scheme="slate"] .kuali-security__row-icon .twemoji,
+[data-md-color-scheme="slate"] .kuali-security__row-icon svg {
+  background: rgba(52, 212, 165, 0.14);
+  color: #34D4A5;
+}
+
+/* Rotate an accent tint through the rows so the ledger doesn't read as
+ * a wall of green. Subtle — just enough to give each guarantee identity. */
+.kuali-security__row:nth-child(2) .kuali-security__row-icon .twemoji,
+.kuali-security__row:nth-child(2) .kuali-security__row-icon svg {
+  background: rgba(52, 107, 167, 0.10);
+  color: var(--kuali-glacier-accessible);
+}
+.kuali-security__row:nth-child(3) .kuali-security__row-icon .twemoji,
+.kuali-security__row:nth-child(3) .kuali-security__row-icon svg {
+  background: rgba(116, 86, 170, 0.10);
+  color: var(--kuali-popsicle-accessible);
+}
+.kuali-security__row:nth-child(4) .kuali-security__row-icon .twemoji,
+.kuali-security__row:nth-child(4) .kuali-security__row-icon svg {
+  background: rgba(87, 199, 222, 0.14);
+  color: #1E7A8E;
+}
+.kuali-security__row:nth-child(5) .kuali-security__row-icon .twemoji,
+.kuali-security__row:nth-child(5) .kuali-security__row-icon svg {
+  background: rgba(200, 51, 151, 0.10);
+  color: var(--kuali-magma-accessible);
+}
+
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(2) .kuali-security__row-icon .twemoji,
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(2) .kuali-security__row-icon svg {
+  background: rgba(123, 214, 232, 0.14);
+  color: #7BD6E8;
+}
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(3) .kuali-security__row-icon .twemoji,
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(3) .kuali-security__row-icon svg {
+  background: rgba(182, 154, 224, 0.16);
+  color: #B69AE0;
+}
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(4) .kuali-security__row-icon .twemoji,
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(4) .kuali-security__row-icon svg {
+  background: rgba(87, 199, 222, 0.18);
+  color: var(--kuali-frost);
+}
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(5) .kuali-security__row-icon .twemoji,
+[data-md-color-scheme="slate"] .kuali-security__row:nth-child(5) .kuali-security__row-icon svg {
+  background: rgba(231, 128, 196, 0.14);
+  color: #E780C4;
+}
+
+.kuali-security__row-body {
+  min-width: 0;
+}
+
+.md-typeset .kuali-security__row-head {
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--kuali-ink);
+  margin: 0 0 0.2rem;
+}
+
+.md-typeset .kuali-security__row-text {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--kuali-ink-soft);
+  margin: 0;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .kuali-security__row-head {
+  color: #f3f4f6;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .kuali-security__row-text {
+  color: #aebbc8;
+}
+
+/* Inline code inside a guarantee row should stay compact. */
+.md-typeset .kuali-security__row-text code {
+  font-size: 0.82em;
+  padding: 0.08em 0.4em;
+  background: rgba(15, 40, 70, 0.06);
+  border-radius: 5px;
+  color: var(--kuali-ink);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .kuali-security__row-text code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e6ebf2;
+}
+
 /* Make the whole card clickable; keep text-selection + inline links usable. */
 .md-typeset .grid.cards > ul > li {
   position: relative;

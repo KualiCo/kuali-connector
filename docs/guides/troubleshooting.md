@@ -92,7 +92,7 @@ kuali mcp verify --client claude-code
 kuali mcp verify --client codex
 ```
 
-It checks six things: config file exists, Kuali entry is registered, binary path resolves, binary is executable, macOS quarantine is clear, and the referenced profile still exists.
+It checks five things: the client's MCP config file exists and parses, a `kuali` entry is registered, the binary path resolves and is executable (with a macOS quarantine-flag check), the API key resolves for the referenced profile, and the binary can run (`kuali version`).
 
 Test the server outside the AI client:
 

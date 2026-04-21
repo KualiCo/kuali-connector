@@ -1,6 +1,6 @@
 # Read-only mode
 
-By default the Connector exposes all 94 MCP tools — that includes tools that create, update, submit, approve, and delete data. When you first connect an AI assistant to a production Kuali instance you may want to dial that down until you trust the flow.
+By default the Connector exposes all 91 resource tools (plus 3 connection-management tools, for 94 total) — that includes tools that create, update, submit, approve, and delete data. When you first connect an AI assistant to a production Kuali instance you may want to dial that down until you trust the flow.
 
 Read-only mode registers **only tools that read data**. Anything that writes, changes, or deletes is hidden from the assistant entirely, not just marked as "destructive."
 
@@ -57,6 +57,7 @@ Everything that changes the instance:
 - File uploads, API key creation/revocation
 - Form template updates, tile updates, workflow step edits
 - Permission grants, rule sets
+- `kuali_run` — the arbitrary-command escape hatch (can call any CLI action) is hidden in read-only mode
 
 If the assistant tries to call one of these, it will simply not see it in the tool list. No partial execution, no prompts.
 
