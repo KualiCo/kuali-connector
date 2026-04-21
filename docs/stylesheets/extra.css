@@ -1040,6 +1040,14 @@ body {
 .md-typeset .example > .admonition-title::before,
 .md-typeset .example > summary::before { background-color: var(--kuali-popsicle); }
 
+/* Material shrinks admonition body copy to ~0.64rem, which reads too small
+ * next to our already-compact 0.78rem body text. Lift it back to body size
+ * so lists and paragraphs inside admonitions stay legible. */
+.md-typeset .admonition,
+.md-typeset details {
+  font-size: 1em;
+}
+
 /* --- Code blocks -------------------------------------------------------- */
 
 .md-typeset pre > code,
