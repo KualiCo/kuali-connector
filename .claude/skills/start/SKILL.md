@@ -1,11 +1,11 @@
 ---
 name: start
-description: Start the local MkDocs preview server for the Kuali Connector documentation site so the user can see edits live at http://127.0.0.1:8000/kuali-connector/. Use when the user says "/start", asks to start, launch, or preview the docs server, or asks to see the docs live.
+description: Start the local MkDocs preview server for the Kuali Connector documentation site so the user can see edits live at http://127.0.0.1:8000/. Use when the user says "/start", asks to start, launch, or preview the docs server, or asks to see the docs live.
 ---
 
 # Start the docs preview server
 
-Runs `mkdocs serve` in the background so the user can preview the Kuali Connector docs at **http://127.0.0.1:8000/kuali-connector/** with live reload.
+Runs `mkdocs serve` in the background so the user can preview the Kuali Connector docs at **http://127.0.0.1:8000/** with live reload.
 
 ## What to do
 
@@ -26,18 +26,19 @@ Runs `mkdocs serve` in the background so the user can preview the Kuali Connecto
      python3 -m mkdocs serve \
        --dev-addr 127.0.0.1:8000 \
        --watch overrides \
-       --dirty
+       --watch docs/stylesheets
    ```
 
    - `MKDOCS_LIVERELOAD=poll` — forces watchdog into polling mode. The default fsevents-backed observer on macOS silently drops file-change events under load (especially when the `git-revision-date-localized` plugin fans out file reads on startup). Polling is 1–2s slower to detect changes but never misses them.
    - `--watch overrides` — mkdocs only auto-watches `docs/` and `mkdocs.yml`. The `overrides/` directory (theme template overrides) needs to be added explicitly.
-   - `--dirty` — only rebuild pages whose source file actually changed. Faster reload, and sidesteps the race where a full rebuild tears down watchers mid-edit.
+   - `--watch docs/stylesheets` — mkdocs ignores asset subdirectories of `docs/` for live reload even though it serves them. Without this, CSS edits require a manual restart.
+   - Do **not** use `--dirty`. It makes CSS/template edits unreliable: mkdocs treats only the originally-changed markdown page as needing rebuild, so the served stylesheet goes stale until a full rebuild is triggered.
 
    Use the `Bash` tool's `run_in_background: true` option. Don't wait for it.
 
 3. **Report the URL back to the user:**
 
-   > Serving at http://127.0.0.1:8000/kuali-connector/ — live reload is on (polling mode, also watching overrides/).
+   > Serving at http://127.0.0.1:8000/ — live reload is on (polling mode, also watching overrides/).
 
    Do not poll in a sleep loop. Trust that mkdocs is up unless the build fails.
 
@@ -47,7 +48,6 @@ Runs `mkdocs serve` in the background so the user can preview the Kuali Connecto
 
 - **Different port:** change `--dev-addr 127.0.0.1:<port>`.
 - **Strict mode:** add `--strict` so warnings become failures. Useful when hunting a broken link.
-- **Clean rebuild:** drop `--dirty` so every reload is a full rebuild.
 - **Faster reload (at the cost of reliability):** drop `MKDOCS_LIVERELOAD=poll` and use the default fsevents observer.
 
 ## Failure modes
