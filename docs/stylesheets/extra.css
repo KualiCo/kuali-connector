@@ -826,17 +826,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
   border-radius: inherit;
-}
-
-.md-typeset .grid.cards > ul > li > :not(:last-child) {
-  position: relative;
-  z-index: 2;
-}
-
-.md-typeset .grid.cards > ul > li > p:last-child {
-  position: static;
 }
 
 .md-typeset .grid.cards .twemoji.lg,
