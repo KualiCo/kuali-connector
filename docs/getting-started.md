@@ -3,7 +3,7 @@
 By the end of this page you'll have the Kuali Connector installed, connected to your Kuali instance, and wired into an AI assistant so you can ask questions in plain English.
 
 !!! tip "What you'll need"
-    - A Kuali instance URL (for example, `https://yourschool.kualibuild.com`)
+    - A Kuali instance URL (for example, `https://yourschool.kualihub.com`)
     - A Kuali API key — **Settings → API Keys** in the Kuali web UI. The key inherits your permissions, so **the Connector will only see what you can see**. If you're an admin, it sees admin things; if you're a reviewer, it sees what a reviewer sees.
     - An AI client you already use: [Claude Desktop](https://claude.ai/download), [Claude Code](https://www.anthropic.com/claude-code), Codex CLI, Gemini CLI, GitHub Copilot CLI, or VS Code with Copilot
 
@@ -46,7 +46,7 @@ kuali version
 Tell the Connector where your instance lives and sign in. The API key is written to your OS keychain (macOS Keychain, Windows Credential Manager, or libsecret on Linux) — it never lands in a plaintext file.
 
 ```bash
-kuali config set api_url https://yourschool.kualibuild.com --profile myschool
+kuali config set api_url https://yourschool.kualihub.com --profile myschool
 kuali auth login --profile myschool
 ```
 

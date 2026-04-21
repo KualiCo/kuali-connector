@@ -4,7 +4,7 @@ The Connector needs two pieces of information before it can do anything useful: 
 
 ## What you'll need
 
-- Your Kuali instance URL — something like `https://yourschool.kualibuild.com` or `https://yourschool.kualihub.com`.
+- Your Kuali instance URL — something like `https://yourschool.kualihub.com`.
 - A Kuali **API key**. Create one in the Kuali web UI under **Settings → API Keys**. The key inherits the permissions of the user that created it, so create it as the user whose access you want the Connector (and, by extension, your AI assistant) to have.
 
 !!! info "API key, not your password"
@@ -16,13 +16,13 @@ The Connector needs two pieces of information before it can do anything useful: 
 ## 1. Save the instance URL
 
 ```bash
-kuali config set api_url https://yourschool.kualibuild.com --profile myschool
+kuali config set api_url https://yourschool.kualihub.com --profile myschool
 ```
 
 The `--profile` flag is a label you pick. If you only ever talk to one Kuali instance, omit it — the Connector will use the default profile:
 
 ```bash
-kuali config set api_url https://yourschool.kualibuild.com
+kuali config set api_url https://yourschool.kualihub.com
 ```
 
 The URL is written to `~/.kuali/config.yaml`.
@@ -56,10 +56,10 @@ You should see your institution's apps.
 Most teams have at least a sandbox and a production instance. Give each one its own profile:
 
 ```bash
-kuali config set api_url https://sandbox.kualibuild.com --profile sandbox
+kuali config set api_url https://sandbox.kualihub.com --profile sandbox
 kuali auth login --profile sandbox
 
-kuali config set api_url https://prod.kualibuild.com --profile prod
+kuali config set api_url https://prod.kualihub.com --profile prod
 kuali auth login --profile prod
 ```
 
