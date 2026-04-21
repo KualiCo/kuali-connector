@@ -17,7 +17,7 @@ Upgrade later with `brew upgrade kuali`, or let the Connector update itself with
 One line, auto-detects your architecture, installs to `/usr/local/bin/kuali` (prompts for your password if needed):
 
 ```bash
-curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
+curl -fsSL https://connector.kuali.co/install.sh | sh
 ```
 
 ## Option 3: npx (no global install)

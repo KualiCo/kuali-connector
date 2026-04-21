@@ -16,7 +16,7 @@ Pick whichever matches your setup. Full per-OS instructions are on the [install]
 === "macOS / Linux"
 
     ```bash
-    curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
+    curl -fsSL https://connector.kuali.co/install.sh | sh
     ```
 
 === "Homebrew"

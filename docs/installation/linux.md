@@ -5,7 +5,7 @@ The Connector supports any **modern 64-bit Linux distribution** (Ubuntu, Debian,
 ## Option 1: Install script
 
 ```bash
-curl -fsSL https://kualico.github.io/kuali-connector/install.sh | sh
+curl -fsSL https://connector.kuali.co/install.sh | sh
 ```
 
 The script auto-detects your architecture and installs to `/usr/local/bin/kuali`. If `/usr/local/bin` isn't writable by your user, it uses `sudo`.

@@ -22,7 +22,7 @@ The Kuali Connector is a single self-contained binary, around 20 MB, with no run
 
 | Method | Best for | Command |
 |---|---|---|
-| Install script | macOS and Linux users who want one command | `curl -fsSL https://kualico.github.io/kuali-connector/install.sh \| sh` |
+| Install script | macOS and Linux users who want one command | `curl -fsSL https://connector.kuali.co/install.sh \| sh` |
 | Homebrew | Mac and Linux users who already use `brew` | `brew install kualico/tap/kuali` |
 | npx | Anyone with Node.js who doesn't want a global install | `npx @kualico/kuali-connector@latest` |
 | Direct download | Windows users, air-gapped environments, CI runners | Grab the binary from the [releases page](https://github.com/kualico/kuali-connector/releases/latest) |

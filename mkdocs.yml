@@ -1,6 +1,6 @@
 site_name: Kuali Connector
 site_description: Documentation for the Kuali Connector — download, install, and use the Kuali command-line tool.
-site_url: https://kualico.github.io/kuali-connector/
+site_url: https://connector.kuali.co/
 repo_url: https://github.com/kualico/kuali-connector
 repo_name: kualico/kuali-connector
 edit_uri: edit/main/docs/
