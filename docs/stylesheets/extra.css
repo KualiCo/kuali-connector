@@ -1594,68 +1594,143 @@ html {
   }
 }
 
-/* --- Three-state theme toggle (system | light | dark) ------------------ */
+/* --- Three-state theme toggle (system | light | dark) ------------------ *
+ * A single icon button in the header opens a small popover menu. */
 
 .kuali-theme-toggle {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  margin: 0 0.35rem 0 0.2rem;
-  padding: 2px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  gap: 2px;
+  margin: 0 0.15rem;
 }
 
-.kuali-theme-toggle__btn {
+.kuali-theme-toggle__trigger {
   display: inline-flex;
   align-items: center;
-  gap: 0.3em;
-  padding: 0.28rem 0.65rem;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.82);
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.kuali-theme-toggle__btn:hover {
-  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
-.kuali-theme-toggle__btn.is-active {
-  background: #ffffff;
-  color: var(--kuali-ink);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+.kuali-theme-toggle__trigger:hover {
+  background: rgba(255, 255, 255, 0.14);
 }
 
-[data-md-color-scheme="slate"] .kuali-theme-toggle__btn.is-active {
-  background: #13222F;
-  color: #F5F7FA;
-}
-
-.kuali-theme-toggle__icon {
-  font-size: 0.95em;
+.kuali-theme-toggle__glyph {
+  font-size: 1.15rem;
   line-height: 1;
 }
 
-/* Hide labels on narrow screens so the toggle still fits in the header. */
-@media (max-width: 600px) {
-  .kuali-theme-toggle__label {
-    display: none;
-  }
-  .kuali-theme-toggle__btn {
-    padding: 0.3rem 0.5rem;
-  }
+.kuali-theme-toggle__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  min-width: 10.5rem;
+  padding: 0.35rem;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--kuali-ink);
+  box-shadow:
+    0 12px 32px rgba(15, 40, 70, 0.18),
+    0 1px 0 rgba(15, 40, 70, 0.04);
+  border: 1px solid rgba(15, 40, 70, 0.08);
+  display: none;
+  z-index: 10;
 }
 
-.kuali-theme-toggle__btn:focus-visible {
+.kuali-theme-toggle.is-open .kuali-theme-toggle__menu {
+  display: block;
+  animation: kuali-theme-pop 0.12s ease-out;
+}
+
+@keyframes kuali-theme-pop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+[data-md-color-scheme="slate"] .kuali-theme-toggle__menu {
+  background: #18293A;
+  color: #F5F7FA;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.kuali-theme-toggle__item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.kuali-theme-toggle__item:hover,
+.kuali-theme-toggle__item:focus-visible {
+  background: rgba(52, 107, 167, 0.08);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85);
+}
+
+[data-md-color-scheme="slate"] .kuali-theme-toggle__item:hover,
+[data-md-color-scheme="slate"] .kuali-theme-toggle__item:focus-visible {
+  background: rgba(123, 214, 232, 0.1);
+}
+
+.kuali-theme-toggle__item-glyph {
+  font-size: 1rem;
+  line-height: 1;
+  width: 1.1rem;
+  text-align: center;
+  color: var(--kuali-ink-soft);
+}
+
+[data-md-color-scheme="slate"] .kuali-theme-toggle__item-glyph {
+  color: #C2CBD7;
+}
+
+.kuali-theme-toggle__item-label {
+  flex: 1 1 auto;
+}
+
+.kuali-theme-toggle__item-check {
+  font-size: 0.85rem;
+  color: var(--kuali-wintergreen-accessible);
+  opacity: 0;
+}
+
+[data-md-color-scheme="slate"] .kuali-theme-toggle__item-check {
+  color: #34D4A5;
+}
+
+.kuali-theme-toggle__item.is-active .kuali-theme-toggle__item-check {
+  opacity: 1;
+}
+
+.kuali-theme-toggle__item.is-active {
+  color: var(--kuali-wintergreen-accessible);
+}
+
+[data-md-color-scheme="slate"] .kuali-theme-toggle__item.is-active {
+  color: #34D4A5;
+}
+
+.kuali-theme-toggle__trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
 }

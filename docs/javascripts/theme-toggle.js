@@ -1,13 +1,19 @@
 /* Kuali three-state theme toggle: system | light | dark.
  *
  * - Replaces Material's built-in palette toggle (which is only two-state).
- * - Preference lives in localStorage under "kuali-theme".
+ * - Preference lives in localStorage under "kuali-theme". Default is "system".
  * - "system" mode follows prefers-color-scheme and reacts live to OS changes.
+ * - UI is a single header icon button that opens a small menu on click.
  * - Works with Material's instant navigation (re-binds on each page load). */
 
 (function () {
   var STORAGE_KEY = "kuali-theme";
   var MODES = ["system", "light", "dark"];
+  var LABELS = {
+    system: { label: "System", glyph: "◐" },
+    light: { label: "Light", glyph: "☀" },
+    dark: { label: "Dark", glyph: "☾" }
+  };
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
 
   function currentPref() {
@@ -35,24 +41,76 @@
   function setPref(pref) {
     try { localStorage.setItem(STORAGE_KEY, pref); } catch (e) { /* ignore */ }
     applyScheme(resolveScheme(pref));
-    syncToggle();
+    syncUi();
   }
 
-  function syncToggle() {
+  function syncUi() {
     var pref = currentPref();
-    var buttons = document.querySelectorAll(".kuali-theme-toggle__btn");
-    buttons.forEach(function (btn) {
+    var trigger = document.querySelector(".kuali-theme-toggle__trigger");
+    if (trigger) {
+      trigger.setAttribute("aria-label", "Theme: " + LABELS[pref].label + " (click to change)");
+      trigger.setAttribute("title", "Theme: " + LABELS[pref].label);
+      var glyph = trigger.querySelector(".kuali-theme-toggle__glyph");
+      if (glyph) glyph.textContent = LABELS[pref].glyph;
+    }
+    document.querySelectorAll(".kuali-theme-toggle__item").forEach(function (btn) {
       var active = btn.dataset.mode === pref;
-      btn.setAttribute("aria-pressed", active ? "true" : "false");
+      btn.setAttribute("aria-checked", active ? "true" : "false");
       btn.classList.toggle("is-active", active);
     });
   }
 
+  function openMenu(wrap) {
+    wrap.classList.add("is-open");
+    var trigger = wrap.querySelector(".kuali-theme-toggle__trigger");
+    trigger.setAttribute("aria-expanded", "true");
+    /* Focus the currently-selected item so keyboard users land on it. */
+    var active = wrap.querySelector(".kuali-theme-toggle__item.is-active");
+    if (active) active.focus();
+  }
+
+  function closeMenu(wrap, opts) {
+    wrap.classList.remove("is-open");
+    var trigger = wrap.querySelector(".kuali-theme-toggle__trigger");
+    trigger.setAttribute("aria-expanded", "false");
+    if (opts && opts.focusTrigger) trigger.focus();
+  }
+
+  function toggleMenu(wrap) {
+    if (wrap.classList.contains("is-open")) closeMenu(wrap);
+    else openMenu(wrap);
+  }
+
+  function handleDocumentClick(e) {
+    document.querySelectorAll(".kuali-theme-toggle.is-open").forEach(function (wrap) {
+      if (!wrap.contains(e.target)) closeMenu(wrap);
+    });
+  }
+
+  function handleKeydown(e) {
+    var wrap = document.querySelector(".kuali-theme-toggle.is-open");
+    if (!wrap) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeMenu(wrap, { focusTrigger: true });
+      return;
+    }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      var items = Array.from(wrap.querySelectorAll(".kuali-theme-toggle__item"));
+      var i = items.indexOf(document.activeElement);
+      var next = e.key === "ArrowDown"
+        ? (i + 1) % items.length
+        : (i - 1 + items.length) % items.length;
+      items[next].focus();
+    }
+  }
+
   function renderToggle() {
     /* Header is persistent under instant nav, so skip re-render if already
-     * mounted — just sync the active state. */
+     * mounted — just refresh the active state. */
     if (document.querySelector(".kuali-theme-toggle")) {
-      syncToggle();
+      syncUi();
       return;
     }
 
@@ -63,28 +121,42 @@
 
     var wrap = document.createElement("div");
     wrap.className = "kuali-theme-toggle";
-    wrap.setAttribute("role", "group");
-    wrap.setAttribute("aria-label", "Color theme");
 
-    var labels = {
-      system: { label: "System", icon: "◐" },
-      light: { label: "Light", icon: "☀" },
-      dark: { label: "Dark", icon: "☾" }
-    };
+    var trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "kuali-theme-toggle__trigger md-header__button md-icon";
+    trigger.setAttribute("aria-haspopup", "menu");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.innerHTML = '<span class="kuali-theme-toggle__glyph" aria-hidden="true">◐</span>';
+    trigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      toggleMenu(wrap);
+    });
+
+    var menu = document.createElement("div");
+    menu.className = "kuali-theme-toggle__menu";
+    menu.setAttribute("role", "menu");
 
     MODES.forEach(function (mode) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "kuali-theme-toggle__btn";
-      btn.dataset.mode = mode;
-      btn.setAttribute("aria-label", "Use " + labels[mode].label.toLowerCase() + " theme");
-      btn.setAttribute("title", labels[mode].label + " theme");
-      btn.innerHTML =
-        '<span class="kuali-theme-toggle__icon" aria-hidden="true">' + labels[mode].icon + "</span>" +
-        '<span class="kuali-theme-toggle__label">' + labels[mode].label + "</span>";
-      btn.addEventListener("click", function () { setPref(mode); });
-      wrap.appendChild(btn);
+      var item = document.createElement("button");
+      item.type = "button";
+      item.className = "kuali-theme-toggle__item";
+      item.dataset.mode = mode;
+      item.setAttribute("role", "menuitemradio");
+      item.setAttribute("aria-checked", "false");
+      item.innerHTML =
+        '<span class="kuali-theme-toggle__item-glyph" aria-hidden="true">' + LABELS[mode].glyph + '</span>' +
+        '<span class="kuali-theme-toggle__item-label">' + LABELS[mode].label + '</span>' +
+        '<span class="kuali-theme-toggle__item-check" aria-hidden="true">✓</span>';
+      item.addEventListener("click", function () {
+        setPref(mode);
+        closeMenu(wrap, { focusTrigger: true });
+      });
+      menu.appendChild(item);
     });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
 
     if (headerOptions) {
       headerOptions.parentNode.insertBefore(wrap, headerOptions);
@@ -92,7 +164,7 @@
       host.appendChild(wrap);
     }
 
-    syncToggle();
+    syncUi();
   }
 
   function handleSystemChange() {
@@ -101,21 +173,18 @@
     }
   }
 
-  /* matchMedia change listener (once per page load is fine — the MQ object
-   * is shared and survives instant-nav). */
-  if (mq.addEventListener) {
-    mq.addEventListener("change", handleSystemChange);
-  } else if (mq.addListener) {
-    mq.addListener(handleSystemChange);
-  }
+  /* One-time listeners — the matchMedia object and document survive
+   * Material's instant navigation. */
+  if (mq.addEventListener) mq.addEventListener("change", handleSystemChange);
+  else if (mq.addListener) mq.addListener(handleSystemChange);
+  document.addEventListener("click", handleDocumentClick);
+  document.addEventListener("keydown", handleKeydown);
 
   function init() {
     applyScheme(resolveScheme(currentPref()));
     renderToggle();
   }
 
-  /* Material exposes document$ as an Observable when instant nav is on.
-   * Subscribe so we re-render on every page change. */
   if (typeof document$ !== "undefined" && document$.subscribe) {
     document$.subscribe(function () { init(); });
   } else if (document.readyState === "loading") {
