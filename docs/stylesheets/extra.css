@@ -389,9 +389,19 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.4rem;
+  gap: 1rem 2.25rem;
   position: relative;
   margin-top: 2.6rem; /* leave vertical room for the "start here" hint */
+}
+
+/* Markdown renders both button links inside a single <p>, so the parent
+ * flex gap doesn't space the buttons — spacing has to live on the <p>. */
+.md-typeset .kuali-hero-actions > p {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2rem;
+  margin: 0;
 }
 
 /* Handwritten "start here" marginalia that visually points at the primary
@@ -717,15 +727,20 @@ body {
 }
 
 @media (max-width: 600px) {
-  /* On narrow screens the hero CTAs stack — give them proper breathing room
-   * so the primary and secondary buttons don't read as a single block. */
+  /* On narrow screens the hero CTAs stack — the inner <p> switches to
+   * column layout so the two buttons stack with proper breathing room. */
   .kuali-hero-actions {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
+  .md-typeset .kuali-hero-actions > p {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
   .kuali-hero-actions .md-button {
-    margin: 0; /* override Material's default button margin in stack mode */
+    margin: 0;
   }
 }
 
@@ -1577,4 +1592,70 @@ html {
   body {
     background-image: none;
   }
+}
+
+/* --- Three-state theme toggle (system | light | dark) ------------------ */
+
+.kuali-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.35rem 0 0.2rem;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  gap: 2px;
+}
+
+.kuali-theme-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.28rem 0.65rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.kuali-theme-toggle__btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.kuali-theme-toggle__btn.is-active {
+  background: #ffffff;
+  color: var(--kuali-ink);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+[data-md-color-scheme="slate"] .kuali-theme-toggle__btn.is-active {
+  background: #13222F;
+  color: #F5F7FA;
+}
+
+.kuali-theme-toggle__icon {
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+/* Hide labels on narrow screens so the toggle still fits in the header. */
+@media (max-width: 600px) {
+  .kuali-theme-toggle__label {
+    display: none;
+  }
+  .kuali-theme-toggle__btn {
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+.kuali-theme-toggle__btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85);
 }

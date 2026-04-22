@@ -8,3 +8,28 @@
     </span>
   </span>
 {% endblock %}
+
+{% block extrahead %}
+  {{ super() }}
+  <script>
+    /* Apply the user's saved theme (system | light | dark) before first paint.
+     * We mirror Material's __palette storage format so its own early script
+     * propagates the attributes onto <body>, and we also set them on <html>
+     * so our own CSS variables (which descend from the element) apply. */
+    (function () {
+      try {
+        var pref = localStorage.getItem("kuali-theme") || "system";
+        var scheme = pref;
+        if (pref === "system") {
+          scheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        var mdScheme = scheme === "dark" ? "slate" : "default";
+        document.documentElement.setAttribute("data-md-color-scheme", mdScheme);
+        localStorage.setItem("__palette", JSON.stringify({
+          index: scheme === "dark" ? 1 : 0,
+          color: { scheme: mdScheme, primary: "custom", accent: "custom" }
+        }));
+      } catch (e) { /* localStorage unavailable — leave Material defaults. */ }
+    })();
+  </script>
+{% endblock %}
