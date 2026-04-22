@@ -260,10 +260,14 @@ body {
 }
 
 /* At phone widths the title crowds the logo and gets truncated — hide it
- * entirely and let the logo stand in as the brand mark. */
+ * entirely and let the logo stand in as the brand mark. The theme toggle
+ * and search icon flush right so the header reads logo ↔ actions. */
 @media (max-width: 600px) {
   .md-header__title {
     display: none;
+  }
+  .md-header .kuali-theme-toggle {
+    margin-left: auto;
   }
 }
 
