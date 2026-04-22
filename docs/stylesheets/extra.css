@@ -259,6 +259,14 @@ body {
   background: rgba(255, 255, 255, 0.6);
 }
 
+/* At phone widths the title crowds the logo and gets truncated — hide it
+ * entirely and let the logo stand in as the brand mark. */
+@media (max-width: 600px) {
+  .md-header__title {
+    display: none;
+  }
+}
+
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
   height: 1.5rem;
