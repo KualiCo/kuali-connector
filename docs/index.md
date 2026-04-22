@@ -76,7 +76,7 @@ Ask Claude, Copilot, or any AI assistant that supports local MCP servers to pull
 
     ---
 
-    Install via Homebrew, `npx`, a one-line installer, or a direct binary download. macOS, Windows, and Linux supported.
+    Install via Homebrew, a one-line installer, or a direct binary download. macOS, Windows, and Linux supported.
 
     [:octicons-arrow-right-24: Install](installation/index.md)
 

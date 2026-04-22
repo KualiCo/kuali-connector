@@ -20,15 +20,7 @@ One line, auto-detects your architecture, installs to `/usr/local/bin/kuali` (pr
 curl -fsSL https://connector.kuali.co/install.sh | sh
 ```
 
-## Option 3: npx (no global install)
-
-If you have Node.js and just want to try it out without touching `/usr/local`:
-
-```bash
-npx @kualico/kuali-connector@latest --help
-```
-
-## Option 4: Direct download
+## Option 3: Direct download
 
 1. Open the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
 2. Download `kuali-darwin-arm64` for Apple Silicon (M1/M2/M3/M4) or `kuali-darwin-amd64` for Intel Macs. Not sure which you have? Apple menu → **About This Mac** → look at the "Chip" line.

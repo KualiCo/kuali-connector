@@ -27,15 +27,7 @@ The Connector supports **Windows 10 and Windows 11** on both amd64 and arm64.
 
     Open a **new** PowerShell window so the updated `PATH` takes effect.
 
-## Option 2: npx (no install)
-
-If you have Node.js (18+) installed:
-
-```powershell
-npx @kualico/kuali-connector@latest --help
-```
-
-## Option 3: WSL
+## Option 2: WSL
 
 If you use Windows Subsystem for Linux, install the Linux build inside your WSL distro — see the [Linux guide](linux.md). An AI client running on Windows can still call a Connector installed in WSL if you point the MCP config at the WSL binary path (`\\wsl$\Ubuntu\home\you\.local\bin\kuali`).
 

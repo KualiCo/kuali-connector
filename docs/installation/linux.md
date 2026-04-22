@@ -18,15 +18,7 @@ If you use [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux):
 brew install kualico/tap/kuali
 ```
 
-## Option 3: npx
-
-With Node.js (18+):
-
-```bash
-npx @kualico/kuali-connector@latest --help
-```
-
-## Option 4: Direct download (no sudo)
+## Option 3: Direct download (no sudo)
 
 If you'd rather install without root access:
 

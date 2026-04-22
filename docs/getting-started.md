@@ -25,12 +25,6 @@ Pick whichever matches your setup. Full per-OS instructions are on the [install]
     brew install kualico/tap/kuali
     ```
 
-=== "npx (no install)"
-
-    ```bash
-    npx @kualico/kuali-connector@latest --help
-    ```
-
 === "Windows"
 
     Download `kuali-windows-amd64.exe` from the [latest release](https://github.com/kualico/kuali-connector/releases/latest), rename it to `kuali.exe`, and place it somewhere on your `PATH`.

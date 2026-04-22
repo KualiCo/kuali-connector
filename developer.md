@@ -76,7 +76,7 @@ Until that exists, update the reference pages manually when commands change.
 
 ## Release binaries
 
-Binaries are built in the Connector source repository by [`goreleaser`](https://goreleaser.com) and published as GitHub releases on this repo. The release workflow also refreshes the Homebrew formula at `kualico/homebrew-tap`. End users install via the script at `connector.kuali.co/install.sh`, Homebrew, `npx`, or a direct binary download.
+Binaries are built in the Connector source repository by [`goreleaser`](https://goreleaser.com) and published as GitHub releases on this repo. The release workflow also refreshes the Homebrew formula at `kualico/homebrew-tap`. End users install via the script at `connector.kuali.co/install.sh`, Homebrew, or a direct binary download.
 
 ## Filing issues
 
