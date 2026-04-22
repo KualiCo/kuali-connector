@@ -7,7 +7,7 @@ The Connector supports **macOS 12 (Monterey) or later** on both Intel and Apple 
 If you already use [Homebrew](https://brew.sh):
 
 ```bash
-brew install kualico/tap/kuali
+brew update && brew install kualico/tap/kuali
 ```
 
 Upgrade later with `brew upgrade kuali`, or let the Connector update itself with `kuali update install`.

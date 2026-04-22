@@ -15,7 +15,7 @@ The script auto-detects your architecture and installs to `/usr/local/bin/kuali`
 If you use [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux):
 
 ```bash
-brew install kualico/tap/kuali
+brew update && brew install kualico/tap/kuali
 ```
 
 ## Option 3: Direct download (no sudo)

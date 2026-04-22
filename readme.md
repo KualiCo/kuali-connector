@@ -19,7 +19,7 @@ curl -fsSL https://connector.kuali.co/install.sh | sh
 
 ```bash
 # Homebrew
-brew install kualico/tap/kuali
+brew update && brew install kualico/tap/kuali
 ```
 
 Windows users and everyone else: see the [install guide](https://connector.kuali.co/installation/).

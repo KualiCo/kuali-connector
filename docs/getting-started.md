@@ -22,7 +22,7 @@ Pick whichever matches your setup. Full per-OS instructions are on the [install]
 === "Homebrew"
 
     ```bash
-    brew install kualico/tap/kuali
+    brew update && brew install kualico/tap/kuali
     ```
 
 === "Windows"
