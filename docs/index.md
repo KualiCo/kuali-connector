@@ -39,15 +39,15 @@ Ask Claude, Copilot, or any AI assistant that supports local MCP servers to pull
 
 <section class="kuali-pitch" aria-label="Why the Kuali Connector" markdown>
 <div class="kuali-pitch__item" markdown>
-### Natural-language operations { .kuali-pitch__title }
+## Natural-language operations { .kuali-pitch__title }
 <p class="kuali-pitch__body">Ask your assistant to list stalled documents, build a new app from a PDF form, or import a spreadsheet of users — and it will.</p>
 </div>
 <div class="kuali-pitch__item" markdown>
-### Works with every major AI client { .kuali-pitch__title }
+## Works with every major AI client { .kuali-pitch__title }
 <p class="kuali-pitch__body">Claude Desktop, Claude Code, Codex CLI, Gemini CLI, GitHub Copilot, VS Code — one command wires the Connector into whichever you use.</p>
 </div>
 <div class="kuali-pitch__item" markdown>
-### Your data stays yours { .kuali-pitch__title }
+## Your data stays yours { .kuali-pitch__title }
 <p class="kuali-pitch__body">API keys live in your OS keychain. The assistant calls your Kuali instance directly from your machine — nothing routes through a third-party server.</p>
 </div>
 </section>
