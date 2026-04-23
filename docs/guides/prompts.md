@@ -193,6 +193,18 @@ _Tools used:_ `kuali_audit_list`, `kuali_audit_users`.
 
 _Tools used:_ `kuali_users_list`, `kuali_users_deactivate`.
 
+### Expunge old documents from an app
+
+> In app `<app-id>`, find every document created more than **`<N>` years** ago and delete them. Work in three phases and stop for confirmation between each:
+>
+> 1. **Plan.** List the matching documents with `kuali_documents_list` (use the creation-date field on the records — confirm the field name from the first page before filtering). Show me the total count, the date cutoff you used, and a sample of 10 (ID, title, creator, created date, current status). Do **not** delete anything yet.
+> 2. **Confirm.** Wait for me to say "go." If the count is over 100, also tell me how long this will take and offer to proceed in batches of 50 with a progress line per batch.
+> 3. **Delete.** Call `kuali_documents_delete` one ID at a time, reporting one line per doc (`deleted <id> — <title>`). On the first failure, stop and show me the error — don't keep going.
+>
+> Final summary: cutoff date used, count deleted, count skipped (with reasons), any failures. This is destructive and irreversible, so prefer caution over speed.
+
+_Tools used:_ `kuali_documents_list`, `kuali_documents_delete` (**destructive**).
+
 ---
 
 ## Tips for getting better answers
