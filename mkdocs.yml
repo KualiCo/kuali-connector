@@ -46,6 +46,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/theme-toggle.js
+  - javascripts/a11y-enhance.js
 
 markdown_extensions:
   - abbr
