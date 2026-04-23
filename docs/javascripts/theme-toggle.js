@@ -48,25 +48,47 @@
     var pref = currentPref();
     var trigger = document.querySelector(".kuali-theme-toggle__trigger");
     if (trigger) {
-      trigger.setAttribute("aria-label", "Theme: " + LABELS[pref].label + " (click to change)");
+      trigger.setAttribute("aria-label", "Theme (currently " + LABELS[pref].label + "). Open theme menu.");
       trigger.setAttribute("title", "Theme: " + LABELS[pref].label);
       var glyph = trigger.querySelector(".kuali-theme-toggle__glyph");
       if (glyph) glyph.textContent = LABELS[pref].glyph;
     }
+    /* Roving tabindex: only the active item is in the tab order; arrow keys
+     * move focus inside the open menu. */
     document.querySelectorAll(".kuali-theme-toggle__item").forEach(function (btn) {
       var active = btn.dataset.mode === pref;
       btn.setAttribute("aria-checked", active ? "true" : "false");
+      btn.setAttribute("tabindex", active ? "0" : "-1");
       btn.classList.toggle("is-active", active);
     });
   }
 
-  function openMenu(wrap) {
+  function focusItem(wrap, index) {
+    var items = Array.from(wrap.querySelectorAll(".kuali-theme-toggle__item"));
+    if (!items.length) return;
+    var clamped = ((index % items.length) + items.length) % items.length;
+    items.forEach(function (item, i) {
+      item.setAttribute("tabindex", i === clamped ? "0" : "-1");
+    });
+    items[clamped].focus();
+  }
+
+  function openMenu(wrap, opts) {
     wrap.classList.add("is-open");
     var trigger = wrap.querySelector(".kuali-theme-toggle__trigger");
     trigger.setAttribute("aria-expanded", "true");
-    /* Focus the currently-selected item so keyboard users land on it. */
-    var active = wrap.querySelector(".kuali-theme-toggle__item.is-active");
-    if (active) active.focus();
+    var items = Array.from(wrap.querySelectorAll(".kuali-theme-toggle__item"));
+    var start = 0;
+    if (opts && opts.focus === "last") {
+      start = items.length - 1;
+    } else if (opts && opts.focus === "first") {
+      start = 0;
+    } else {
+      /* Default: focus the currently-selected item. */
+      var active = wrap.querySelector(".kuali-theme-toggle__item.is-active");
+      start = active ? items.indexOf(active) : 0;
+    }
+    focusItem(wrap, start);
   }
 
   function closeMenu(wrap, opts) {
@@ -77,7 +99,7 @@
   }
 
   function toggleMenu(wrap) {
-    if (wrap.classList.contains("is-open")) closeMenu(wrap);
+    if (wrap.classList.contains("is-open")) closeMenu(wrap, { focusTrigger: true });
     else openMenu(wrap);
   }
 
@@ -87,23 +109,52 @@
     });
   }
 
+  function handleTriggerKeydown(e) {
+    var wrap = e.currentTarget.closest(".kuali-theme-toggle");
+    if (!wrap) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      openMenu(wrap, { focus: "first" });
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      openMenu(wrap, { focus: "last" });
+    }
+  }
+
   function handleKeydown(e) {
     var wrap = document.querySelector(".kuali-theme-toggle.is-open");
     if (!wrap) return;
+    var items = Array.from(wrap.querySelectorAll(".kuali-theme-toggle__item"));
+    var i = items.indexOf(document.activeElement);
     if (e.key === "Escape") {
       e.preventDefault();
       closeMenu(wrap, { focusTrigger: true });
-      return;
-    }
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      var items = Array.from(wrap.querySelectorAll(".kuali-theme-toggle__item"));
-      var i = items.indexOf(document.activeElement);
-      var next = e.key === "ArrowDown"
-        ? (i + 1) % items.length
-        : (i - 1 + items.length) % items.length;
-      items[next].focus();
+      focusItem(wrap, i + 1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      focusItem(wrap, i - 1);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      focusItem(wrap, 0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      focusItem(wrap, items.length - 1);
+    } else if (e.key === "Tab") {
+      /* Tabbing out closes the menu without preventing the default nav. */
+      closeMenu(wrap);
     }
+  }
+
+  function handleFocusOut(e) {
+    var wrap = e.currentTarget;
+    /* queueMicrotask so the incoming focus target is known. */
+    queueMicrotask(function () {
+      if (!wrap.contains(document.activeElement)) {
+        closeMenu(wrap);
+      }
+    });
   }
 
   function renderToggle() {
@@ -121,21 +172,28 @@
 
     var wrap = document.createElement("div");
     wrap.className = "kuali-theme-toggle";
+    wrap.addEventListener("focusout", handleFocusOut);
+
+    var menuId = "kuali-theme-menu";
 
     var trigger = document.createElement("button");
     trigger.type = "button";
     trigger.className = "kuali-theme-toggle__trigger md-header__button md-icon";
     trigger.setAttribute("aria-haspopup", "menu");
     trigger.setAttribute("aria-expanded", "false");
+    trigger.setAttribute("aria-controls", menuId);
     trigger.innerHTML = '<span class="kuali-theme-toggle__glyph" aria-hidden="true">◐</span>';
     trigger.addEventListener("click", function (e) {
       e.stopPropagation();
       toggleMenu(wrap);
     });
+    trigger.addEventListener("keydown", handleTriggerKeydown);
 
     var menu = document.createElement("div");
     menu.className = "kuali-theme-toggle__menu";
+    menu.id = menuId;
     menu.setAttribute("role", "menu");
+    menu.setAttribute("aria-label", "Theme");
 
     MODES.forEach(function (mode) {
       var item = document.createElement("button");
@@ -144,6 +202,7 @@
       item.dataset.mode = mode;
       item.setAttribute("role", "menuitemradio");
       item.setAttribute("aria-checked", "false");
+      item.setAttribute("tabindex", "-1");
       item.innerHTML =
         '<span class="kuali-theme-toggle__item-glyph" aria-hidden="true">' + LABELS[mode].glyph + '</span>' +
         '<span class="kuali-theme-toggle__item-label">' + LABELS[mode].label + '</span>' +
