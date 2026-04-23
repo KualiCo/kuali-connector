@@ -734,7 +734,8 @@ body {
   vertical-align: -0.15em;
   background: #E6EEF7;
   margin-left: 0.25ch;
-  animation: kuali-caret 1s step-end infinite;
+  /* WCAG 2.2.2: finite blink so there's no unpauseable motion >5s. */
+  animation: kuali-caret 1s step-end 6;
 }
 
 @keyframes kuali-caret {
@@ -1505,9 +1506,16 @@ body {
 
 /* --- Tables ------------------------------------------------------------- */
 
-.md-typeset table:not([class]) {
+/* Apply the rounded look to Material's horizontal-scroll wrapper rather
+ * than the table itself — keeping overflow:auto preserves WCAG 1.4.10
+ * Reflow for wide tables at 320 CSS px. */
+.md-typeset__table,
+.md-typeset__scrollwrap {
   border-radius: 8px;
-  overflow: hidden;
+  overflow: auto;
+}
+
+.md-typeset table:not([class]) {
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -1600,7 +1608,11 @@ summary:focus-visible {
 /* WCAG 2.4.11 Focus Not Obscured: sticky header + announce bar stack; land
  * anchor-target scrolling below that so the focused element is visible. */
 html {
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 7.5rem;
+}
+
+.md-typeset :target {
+  scroll-margin-top: 7.5rem;
 }
 
 /* Respect reduced motion. */
@@ -1613,7 +1625,8 @@ html {
   .kuali-terminal:hover,
   .kuali-chat,
   .kuali-chat:hover,
-  .kuali-hero > * {
+  .kuali-hero > *,
+  .kuali-theme-toggle__menu {
     transform: none;
     transition: none;
     animation: none;
@@ -1655,6 +1668,7 @@ html {
     background: Canvas;
     color: CanvasText;
     border: 1px solid CanvasText;
+    transform: none;
   }
   .kuali-chat__bubble,
   .kuali-chat__tool {
