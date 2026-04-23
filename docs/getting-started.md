@@ -9,17 +9,38 @@ By the end of this page you'll have the Kuali Connector installed, connected to 
 
 ---
 
+!!! info "Every command on this page runs in a terminal"
+    The steps below are typed into a terminal (also called a *command line*, *shell*, or *command prompt*) — **not** into your AI assistant's chat window or a browser address bar. If you've never opened one before:
+
+    === "macOS"
+
+        Press <kbd>⌘</kbd> + <kbd>Space</kbd>, type `Terminal`, and press <kbd>Return</kbd>. Or open **Finder → Applications → Utilities → Terminal**. You'll see a window with a prompt like `yourname@Mac ~ %` — that's where commands go.
+
+    === "Linux"
+
+        Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd> on most distros (GNOME, KDE, Xfce). Or look in your application menu for **Terminal**, **Console**, **Konsole**, or **GNOME Terminal**. The prompt looks like `yourname@host:~$`.
+
+    === "Windows"
+
+        Press <kbd>Win</kbd> + <kbd>X</kbd> and choose **Terminal** or **Windows PowerShell**. On Windows 11 the default is Windows Terminal; on Windows 10, PowerShell. The prompt looks like `PS C:\Users\yourname>`.
+
+    Type each command exactly as shown (use the copy button in the top-right of each code block), then press <kbd>Return</kbd> / <kbd>Enter</kbd>. Do **not** type the prompt characters (`$`, `%`, `PS >`) — they're just visual cues that the terminal is ready for input.
+
 ## 1. Install the Connector
 
 Pick whichever matches your setup. Full per-OS instructions are on the [install](installation/index.md) page.
 
 === "macOS / Linux"
 
+    Run in **Terminal**:
+
     ```bash
     curl -fsSL https://connector.kuali.co/install.sh | sh
     ```
 
-=== "Homebrew"
+=== "Homebrew (macOS / Linux)"
+
+    Run in **Terminal**:
 
     ```bash
     brew update && brew install kualico/tap/kuali
@@ -27,9 +48,9 @@ Pick whichever matches your setup. Full per-OS instructions are on the [install]
 
 === "Windows"
 
-    Download `kuali-windows-amd64.exe` from the [latest release](https://github.com/kualico/kuali-connector/releases/latest), rename it to `kuali.exe`, and place it somewhere on your `PATH`.
+    Download `kuali-windows-amd64.exe` from the [latest release](https://github.com/kualico/kuali-connector/releases/latest), rename it to `kuali.exe`, and place it somewhere on your `PATH`. See the [Windows install guide](installation/windows.md) for PowerShell steps.
 
-Verify the binary is on your path:
+Verify the binary is on your path. Run in your terminal (Terminal on macOS/Linux, PowerShell on Windows):
 
 ```bash
 kuali version
@@ -39,6 +60,8 @@ kuali version
 
 Tell the Connector where your instance lives and sign in. The API key is written to your OS keychain (macOS Keychain, Windows Credential Manager, or libsecret on Linux) — it never lands in a plaintext file.
 
+Run these two commands in your terminal, one after the other:
+
 ```bash
 kuali config set api_url https://yourschool.kualihub.com --profile myschool
 kuali auth login --profile myschool
@@ -46,7 +69,7 @@ kuali auth login --profile myschool
 
 `myschool` is just a label. If you only have one Kuali instance, you can omit `--profile` and the default profile is used. You can add more later by repeating both commands with a different `--profile` name (for example `sandbox`, `prod`, `staging`).
 
-Check that everything is talking:
+Check that everything is talking — still in the same terminal window:
 
 ```bash
 kuali doctor --profile myschool
@@ -56,7 +79,7 @@ You should see green ticks for URL, auth, and API reachability. If anything fail
 
 ## 3. Wire it into your AI assistant
 
-One command reads your saved profile, finds your AI client's config file, and writes the Connector entry for you.
+One command reads your saved profile, finds your AI client's config file, and writes the Connector entry for you. Run it in the same terminal.
 
 === "Claude Desktop"
 
@@ -74,6 +97,8 @@ One command reads your saved profile, finds your AI client's config file, and wr
 
 === "Codex / Gemini / Copilot / VS Code"
 
+    Run whichever line matches the client you use:
+
     ```bash
     kuali mcp setup --profile myschool --client codex
     kuali mcp setup --profile myschool --client gemini-cli
@@ -84,7 +109,7 @@ One command reads your saved profile, finds your AI client's config file, and wr
 !!! note "Want the assistant to look but not change anything?"
     Add `--tools read-only` to the setup command. Only read tools (list, get, export, search, status) are registered — create, update, submit, approve, and delete are hidden. See [Read-only mode](guides/read-only-mode.md).
 
-Confirm the setup landed correctly:
+Confirm the setup landed correctly — again, in the terminal:
 
 ```bash
 kuali mcp verify
@@ -92,7 +117,7 @@ kuali mcp verify
 
 ## 4. Ask your assistant something
 
-Open Claude Desktop (or your chosen client) and try one of these:
+You're done with the terminal — the remaining steps happen inside your AI client. Open Claude Desktop (or your chosen client) and type one of these prompts into the **chat window**:
 
 > "List the first ten apps in our Kuali instance."
 
