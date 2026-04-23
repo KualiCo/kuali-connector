@@ -213,3 +213,4 @@ _Tools used:_ `kuali_documents_list`, `kuali_documents_delete` (**destructive**)
 - **Ask for a preview step.** Most destructive prompts above include "show me the plan first" — that lets you spot a wrong filter before it touches data.
 - **Use the right scope.** If you only need read access, set the profile up in [read-only mode](read-only-mode.md) and the assistant will literally not be able to change anything.
 - **Reference the CLI if you want a command.** "Give me the raw `kuali` command so I can put this in a cron job" turns a prompt into a script.
+- **Let the assistant improve your prompt.** If it's struggling or spinning on a task, ask it to help you rewrite the prompt. A sharper prompt usually finishes faster and more reliably than a longer conversation.
