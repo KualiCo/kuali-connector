@@ -1529,13 +1529,13 @@ body {
 /* --- Nav / sidebar highlight ------------------------------------------- */
 
 .md-nav__link--active,
-.md-nav__link:focus,
+.md-nav__link:focus-visible,
 .md-nav__link:hover {
   color: var(--kuali-wintergreen-accessible);
 }
 
 [data-md-color-scheme="slate"] .md-nav__link--active,
-[data-md-color-scheme="slate"] .md-nav__link:focus,
+[data-md-color-scheme="slate"] .md-nav__link:focus-visible,
 [data-md-color-scheme="slate"] .md-nav__link:hover {
   color: #34D4A5;
 }
@@ -1556,6 +1556,25 @@ summary:focus-visible {
   border-radius: 6px;
 }
 
+/* Material's search results container has tabindex=0 so keyboard users
+ * can scroll it — give it a visible ring. */
+.md-search__scrollwrap:focus-visible,
+.md-search-result__more:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: -2px;
+}
+
+/* Heading permalinks: ensure a 24x24 minimum click target per SC 2.5.8. */
+.md-typeset .headerlink {
+  min-width: 24px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.2em;
+  margin-left: 0.25em;
+}
+
 .md-typeset .md-button:focus-visible {
   border-radius: 999px;
 }
@@ -1570,6 +1589,12 @@ summary:focus-visible {
 
 [data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:focus-within {
   outline-color: #7BD6E8;
+}
+
+@media (forced-colors: active) {
+  .md-typeset .grid.cards > ul > li:focus-within {
+    outline: 3px solid Highlight;
+  }
 }
 
 /* WCAG 2.4.11 Focus Not Obscured: sticky header + announce bar stack; land
@@ -1729,14 +1754,22 @@ html {
   transition: background-color 0.12s ease;
 }
 
-.kuali-theme-toggle__item:hover,
-.kuali-theme-toggle__item:focus-visible {
+.kuali-theme-toggle__item:hover {
   background: rgba(52, 107, 167, 0.08);
-  outline: none;
 }
 
-[data-md-color-scheme="slate"] .kuali-theme-toggle__item:hover,
+.kuali-theme-toggle__item:focus-visible {
+  outline: 2px solid var(--kuali-glacier-accessible);
+  outline-offset: -2px;
+  background: rgba(52, 107, 167, 0.08);
+}
+
+[data-md-color-scheme="slate"] .kuali-theme-toggle__item:hover {
+  background: rgba(123, 214, 232, 0.1);
+}
+
 [data-md-color-scheme="slate"] .kuali-theme-toggle__item:focus-visible {
+  outline-color: #7BD6E8;
   background: rgba(123, 214, 232, 0.1);
 }
 
@@ -1780,5 +1813,5 @@ html {
 
 .kuali-theme-toggle__trigger:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95);
 }
