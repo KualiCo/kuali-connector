@@ -1275,6 +1275,10 @@ body {
   padding: 0;
 }
 
+.md-typeset .kuali-pitch__title::before {
+  content: none;
+}
+
 .md-typeset .kuali-pitch__title .headerlink {
   display: none;
 }
