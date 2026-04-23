@@ -55,7 +55,7 @@ _Tools used:_ `kuali_documents_list` (with filter), `kuali_workflows_status`, `k
 
 ---
 
-## Sponsored Programs / Research
+## Sponsored Programs / Compliance / Research
 
 ### Proposal pipeline overview
 
