@@ -412,7 +412,7 @@ body {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem 2rem;
+  gap: 1rem;
   margin: 0;
 }
 
