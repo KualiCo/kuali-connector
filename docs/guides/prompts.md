@@ -214,3 +214,4 @@ _Tools used:_ `kuali_documents_list`, `kuali_documents_delete` (**destructive**)
 - **Use the right scope.** If you only need read access, set the profile up in [read-only mode](read-only-mode.md) and the assistant will literally not be able to change anything.
 - **Reference the CLI if you want a command.** "Give me the raw `kuali` command so I can put this in a cron job" turns a prompt into a script.
 - **Let the assistant improve your prompt.** If it's struggling or spinning on a task, ask it to help you rewrite the prompt. A sharper prompt usually finishes faster and more reliably than a longer conversation.
+- **Escape the turn-limit loop.** If the assistant keeps stopping and asking you to "continue," stop and ask it to give you the equivalent `kuali` CLI command or short script to run in your terminal instead. The CLI runs to completion in one shot — no turns, no babysitting.
