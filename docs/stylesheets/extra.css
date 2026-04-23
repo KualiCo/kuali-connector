@@ -1275,6 +1275,10 @@ body {
   padding: 0;
 }
 
+.md-typeset .kuali-pitch__title .headerlink {
+  display: none;
+}
+
 .kuali-pitch__body {
   font-size: 0.84rem;
   line-height: 1.55;
