@@ -26,7 +26,7 @@
   --kuali-glacier-accessible: #2A5789;            /* ~6:1 on white */
   --kuali-popsicle-accessible: #5A3E8A;
   --kuali-magma-accessible: #A82C80;
-  --kuali-flare-accessible: #C95900;
+  --kuali-flare-accessible: #A34600;
 
   /* Warm neutral surface for light mode. */
   --kuali-paper: #FAF8F3;
@@ -50,7 +50,7 @@
   --kuali-radius-md: 10px;
   --kuali-shadow-soft: 0 4px 18px rgba(15, 40, 70, 0.06);
   --kuali-shadow-raise: 0 16px 38px rgba(15, 40, 70, 0.12);
-  --kuali-focus-ring: 0 0 0 3px rgba(52, 107, 167, 0.45);
+  --kuali-focus-ring: 0 0 0 3px #2A5789;
 }
 
 [data-md-color-scheme="slate"] {
@@ -62,7 +62,7 @@
 
   --md-default-bg-color: #0B1722;
 
-  --kuali-focus-ring: 0 0 0 3px rgba(87, 199, 222, 0.55);
+  --kuali-focus-ring: 0 0 0 3px #7BD6E8;
 }
 
 /* Soft dot-grid background texture on the body; near-invisible but adds depth. */
@@ -220,6 +220,12 @@ body {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
 }
 
+/* Dark mode: use the darker accessible wintergreen so white text / icons
+ * in the header hit WCAG 4.5:1 (primary fg #00A376 is too light). */
+[data-md-color-scheme="slate"] .md-header {
+  background: var(--kuali-wintergreen-accessible);
+}
+
 .md-header__inner {
   display: flex;
   align-items: center;
@@ -259,6 +265,10 @@ body {
   background: rgba(255, 255, 255, 0.6);
 }
 
+[data-md-color-scheme="slate"] .md-header__title::before {
+  background: rgba(255, 255, 255, 0.85);
+}
+
 /* At phone widths the title crowds the logo and gets truncated — hide it
  * entirely and let the logo stand in as the brand mark. The theme toggle
  * and search icon flush right so the header reads logo ↔ actions. */
@@ -279,6 +289,12 @@ body {
 
 .md-tabs {
   background: var(--md-primary-fg-color);
+}
+
+/* In dark mode the primary fg color is #00A376 — too light for white text
+ * to hit 4.5:1. Use the darker wintergreen-accessible instead. */
+[data-md-color-scheme="slate"] .md-tabs {
+  background: var(--kuali-wintergreen-accessible);
 }
 
 .md-tabs__link {
@@ -608,7 +624,7 @@ body {
 }
 
 .kuali-chat__turn--ai .kuali-chat__avatar {
-  background: linear-gradient(135deg, var(--kuali-wintergreen) 0%, var(--kuali-glacier) 100%);
+  background: linear-gradient(135deg, var(--kuali-glacier-accessible) 0%, var(--kuali-wintergreen-accessible) 100%);
 }
 
 .kuali-chat__bubble {
@@ -799,6 +815,7 @@ body {
 
 [data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li {
   background: #13222F;
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .md-typeset .grid.cards > ul > li::before {
@@ -991,6 +1008,7 @@ body {
 
 [data-md-color-scheme="slate"] .kuali-security__ledger {
   background: #13222F;
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .md-typeset .kuali-security__ledger-title {
@@ -1007,6 +1025,7 @@ body {
 
 [data-md-color-scheme="slate"] .md-typeset .kuali-security__ledger-title {
   color: #34D4A5;
+  border-bottom-color: rgba(255, 255, 255, 0.24);
 }
 
 .md-typeset ul.kuali-security__list {
@@ -1391,10 +1410,10 @@ body {
  * sole indicator. Nav / button links are handled separately. */
 .md-typeset a {
   text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: rgba(52, 107, 167, 0.45);
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: currentColor;
   text-underline-offset: 3px;
-  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+  transition: text-decoration-thickness 0.15s ease, color 0.15s ease;
 }
 
 .md-typeset a:hover {
@@ -1424,19 +1443,24 @@ body {
 /* …but card body paragraph links (rare) should stay underlined. */
 .md-typeset .grid.cards > ul > li p:not(:last-child) a {
   text-decoration: underline;
-  text-decoration-color: rgba(52, 107, 167, 0.45);
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
 }
 
 /* --- Search ------------------------------------------------------------- */
 
 .md-search__input {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.32);
   color: #ffffff;
 }
 
 .md-search__input::placeholder {
   color: rgba(255, 255, 255, 0.95);
+}
+
+[data-md-color-scheme="slate"] .md-search__input {
+  background: rgba(0, 0, 0, 0.38);
 }
 
 /* --- Footer ------------------------------------------------------------- */
@@ -1455,16 +1479,28 @@ body {
 }
 
 .md-social__link {
-  color: rgba(255, 255, 255, 0.85);
+  color: #ffffff;
+  opacity: 0.95;
 }
 
 .md-social__link:hover {
   color: var(--kuali-frost);
+  opacity: 1;
+}
+
+.md-footer__link {
+  color: #ffffff;
+  opacity: 1;
 }
 
 .md-footer__link:hover,
 .md-footer__link:focus {
   opacity: 1;
+}
+
+.md-footer__direction {
+  color: #ffffff;
+  opacity: 0.92;
 }
 
 /* --- Tables ------------------------------------------------------------- */
