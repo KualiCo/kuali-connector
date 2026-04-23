@@ -110,7 +110,7 @@ The [prompt library](guides/prompts.md) has dozens more — including prompts fo
 
 <div class="grid cards" markdown>
 
--   :material-lightbulb-on-outline:{ .lg .middle } **Prompt library**
+-   <h3 class="kuali-card__title">:material-lightbulb-on-outline:{ .lg .middle } Prompt library</h3>
 
     ---
 
@@ -118,7 +118,7 @@ The [prompt library](guides/prompts.md) has dozens more — including prompts fo
 
     [:octicons-arrow-right-24: Prompts](guides/prompts.md)
 
--   :material-robot-outline:{ .lg .middle } **Client-specific guides**
+-   <h3 class="kuali-card__title">:material-robot-outline:{ .lg .middle } Client-specific guides</h3>
 
     ---
 
@@ -126,7 +126,7 @@ The [prompt library](guides/prompts.md) has dozens more — including prompts fo
 
     [:octicons-arrow-right-24: AI assistants](guides/index.md)
 
--   :material-console:{ .lg .middle } **Use it as a CLI**
+-   <h3 class="kuali-card__title">:material-console:{ .lg .middle } Use it as a CLI</h3>
 
     ---
 

@@ -4,15 +4,15 @@ The Kuali Connector is a single self-contained binary, around 20 MB, with no run
 
 <div class="grid cards" markdown>
 
--   :fontawesome-brands-apple:{ .lg .middle } **[macOS](macos.md)**
+-   <h3 class="kuali-card__title">:fontawesome-brands-apple:{ .lg .middle } [macOS](macos.md)</h3>
 
     macOS 12 (Monterey) or later, Intel or Apple Silicon.
 
--   :fontawesome-brands-windows:{ .lg .middle } **[Windows](windows.md)**
+-   <h3 class="kuali-card__title">:fontawesome-brands-windows:{ .lg .middle } [Windows](windows.md)</h3>
 
     Windows 10 or later, 64-bit (amd64 or arm64).
 
--   :fontawesome-brands-linux:{ .lg .middle } **[Linux](linux.md)**
+-   <h3 class="kuali-card__title">:fontawesome-brands-linux:{ .lg .middle } [Linux](linux.md)</h3>
 
     Any modern 64-bit Linux distribution.
 

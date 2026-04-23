@@ -799,6 +799,25 @@ body {
 
 /* --- Feature card grid (home page) ------------------------------------- */
 
+/* Grid-card title heading — keeps the previous strong-text look but carries
+ * real heading semantics for navigation-by-heading. */
+.md-typeset .kuali-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* Material renders the emoji shortcode and any surrounding text inside an
+ * empty wrapper <p> that becomes display:none alongside our title. */
+.md-typeset .grid.cards > ul > li > p:empty,
+.md-typeset .grid.cards > ul > li > p:has(> .kuali-card__title:only-child) {
+  display: none;
+}
+
 .md-typeset .grid.cards > ul > li,
 .md-typeset .grid > .card {
   border-radius: var(--kuali-radius-lg);
@@ -1029,8 +1048,7 @@ body {
   border-bottom-color: rgba(255, 255, 255, 0.24);
 }
 
-.md-typeset ul.kuali-security__list {
-  list-style: none;
+.md-typeset dl.kuali-security__list {
   margin: 0;
   padding: 0;
   display: flex;
@@ -1041,9 +1059,16 @@ body {
 .md-typeset .kuali-security__row {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.85rem;
+  column-gap: 0.85rem;
+  row-gap: 0.2rem;
   align-items: start;
   padding: 0;
+}
+
+.md-typeset .kuali-security__row-term {
+  display: contents;
+  margin: 0;
+  font-weight: inherit;
 }
 
 /* Neutralize Material's list-item pseudo-marker on custom lists. */
@@ -1118,16 +1143,14 @@ body {
   color: #E780C4;
 }
 
-.kuali-security__row-body {
-  min-width: 0;
-}
-
 .md-typeset .kuali-security__row-head {
   font-size: 0.92rem;
   font-weight: 600;
   line-height: 1.35;
   color: var(--kuali-ink);
-  margin: 0 0 0.2rem;
+  margin: 0;
+  grid-column: 2;
+  min-width: 0;
 }
 
 .md-typeset .kuali-security__row-text {
@@ -1135,6 +1158,8 @@ body {
   line-height: 1.55;
   color: var(--kuali-ink-soft);
   margin: 0;
+  grid-column: 2;
+  min-width: 0;
 }
 
 [data-md-color-scheme="slate"] .md-typeset .kuali-security__row-head {
