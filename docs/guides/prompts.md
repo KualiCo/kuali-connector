@@ -89,11 +89,21 @@ _Tools used:_ `kuali_documents_list` (animal-ethics), `kuali_export_pdf`.
 
 The Connector can import a CSV into any dataset. Column-to-field mapping is interactive — when there's ambiguity, the assistant should walk you through it.
 
-### Import users from a spreadsheet
+### Import a CSV into an app and submit every row
 
-> I'm attaching `new-students-fall-2026.csv` with columns `Preferred Name, Campus Email, Role, Advisor Email, Cohort`. Import these as Kuali users. Preview the mapping first: show me which CSV column maps to which Kuali field, and pause if anything is ambiguous — I'll confirm before any accounts are created.
+> Import the attached CSV into the Kuali `<App Name>` app, submitting every row through workflow — always pass `--submit` to `kuali import csv`. Drafts don't appear in `documents list` or the dataset view, so an import without `--submit` looks like failure even when it succeeded.
+>
+> Resolve the target with `kuali_apps_list --search "<App Name>"` and confirm CSV headers match field labels via `kuali_forms_list --app <id>`. If mapping is clean, skip the dry-run; if anything is ambiguous, dry-run one chunk first.
+>
+> The Kuali CLI runs on the user's machine, not your sandbox. Call `Filesystem:list_allowed_directories` to find a writable path, then use `Filesystem:write_file` to stage chunks there — don't try `/mnt/user-data/uploads/` first.
+>
+> Chunk at **10 rows per file**, header included in each. The MCP tool-call timeout kills longer imports; 10 rows runs in ~2s. For CSVs >100 rows, pause every 5 chunks to verify progress.
+>
+> Import each chunk with `kuali import csv --app <id> --file <chunk> --submit`, reporting one line per chunk ("Chunk N/M: 10/10 ✓"). Only dump JSON on failure — then show the failing row and ask whether to continue, retry, or stop. After the last chunk, verify totals with `documents list --app <id> --limit 1`.
+>
+> When done, offer to delete the staged chunks. Final summary: app name + ID, rows imported, any failures. Nothing more unless asked.
 
-_Tools used:_ `kuali_users_import`, `kuali_forms_schema` (to fetch target fields).
+_Tools used:_ `kuali_apps_list`, `kuali_forms_list`, `kuali_import_csv` (with `--submit`), `kuali_documents_list`, plus the client's filesystem MCP for staging chunks.
 
 ### Import documents with mapping review
 
