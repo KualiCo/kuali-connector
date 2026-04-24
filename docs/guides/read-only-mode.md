@@ -1,6 +1,6 @@
 # Read-only mode
 
-By default the Connector exposes all 91 resource tools (plus 3 connection-management tools, for 94 total) — that includes tools that create, update, submit, approve, and delete data. When you first connect an AI assistant to a production Kuali instance you may want to dial that down until you trust the flow.
+By default the Connector exposes all 91 resource tools, the `kuali_run` catch-all, and 3 connection-management tools (95 total) — that includes tools that create, update, submit, approve, and delete data. When you first connect an AI assistant to a production Kuali instance you may want to dial that down until you trust the flow.
 
 Read-only mode registers **only tools that read data**. Anything that writes, changes, or deletes is hidden from the assistant entirely, not just marked as "destructive."
 
