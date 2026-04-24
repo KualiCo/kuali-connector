@@ -100,7 +100,7 @@ Ask Claude, Copilot, or any AI assistant that supports local MCP servers to pull
 
     ---
 
-    Every MCP tool your AI assistant can call — 91 resource tools plus 3 connection-management tools (94 total) — grouped by resource, with read-only and destructive markings.
+    Every MCP tool your AI assistant can call — 91 resource tools, the `kuali_run` catch-all, and 3 connection-management tools (95 total) — grouped by resource, with read-only and destructive markings.
 
     [:octicons-arrow-right-24: MCP tools](reference/mcp-tools.md)
 
@@ -195,7 +195,7 @@ That's how AI tool use works: when the assistant calls a Connector tool, the res
 <span class="kuali-security__row-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M14 15c0 1.11-.89 2-2 2a2 2 0 0 1-2-2c0-1.11.89-2 2-2a2 2 0 0 1 2 2m-.91 5c.12.72.37 1.39.72 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h1V6c0-2.76 2.24-5 5-5s5 2.24 5 5v2h1a2 2 0 0 1 2 2v3.09c-.33-.05-.66-.09-1-.09s-.67.04-1 .09V10H6v10zM9 8h6V6c0-1.66-1.34-3-3-3S9 4.34 9 6zm12.34 7.84-3.59 3.59-1.59-1.59L15 19l2.75 3 4.75-4.75z" fill="currentColor"/></svg></span>
 <span class="kuali-security__row-head">TLS enforced and rate-limited</span>
 </dt>
-<dd class="kuali-security__row-text">Traffic is TLS-encrypted end-to-end. Requests are rate-limited (10/sec sustained, burst of 20) so an overeager prompt can't hammer your instance.</dd>
+<dd class="kuali-security__row-text">Traffic is TLS-encrypted end-to-end. Requests from your AI assistant are rate-limited (5/sec sustained, burst of 10) so an overeager prompt can't hammer your instance.</dd>
 </div>
 
 </dl>

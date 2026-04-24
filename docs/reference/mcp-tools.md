@@ -1,6 +1,6 @@
 # MCP tool reference
 
-The Connector runs as a **local MCP server** (stdio transport) and exposes **91 resource tools** plus **3 connection-management tools** (94 total) to any AI client that can launch one. It speaks the [Model Context Protocol](https://modelcontextprotocol.io). When you wire a client up with `kuali mcp setup`, every tool listed below becomes callable from inside a conversation.
+The Connector runs as a **local MCP server** (stdio transport) and exposes **91 resource tools**, the `kuali_run` catch-all, and **3 connection-management tools** (95 total) to any AI client that can launch one. It speaks the [Model Context Protocol](https://modelcontextprotocol.io). When you wire a client up with `kuali mcp setup`, every tool listed below becomes callable from inside a conversation.
 
 !!! info "Local MCP servers only"
     The Connector is designed to run on your own machine and communicate with the AI client over stdio. Clients that only support **hosted** MCP servers (HTTPS endpoints) — ChatGPT (chatgpt.com), Claude.ai — can't launch it directly. See the [FAQ](../faq.md#does-it-work-with-chatgpt) for the full story.
