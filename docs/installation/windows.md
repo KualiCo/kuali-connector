@@ -2,7 +2,19 @@
 
 The Connector supports **Windows 10 and Windows 11** on both amd64 and arm64.
 
-## Option 1: Direct download (recommended)
+## Option 1: PowerShell installer (recommended)
+
+Open **PowerShell** and run:
+
+```powershell
+irm https://connector.kuali.co/install.ps1 | iex
+```
+
+The script picks the right build for your CPU (amd64 or arm64), downloads it to `%LOCALAPPDATA%\Programs\kuali\kuali.exe`, and adds that folder to your user `PATH`. No admin rights required.
+
+Open a **new** PowerShell window when it finishes so the updated `PATH` takes effect.
+
+## Option 2: Direct download
 
 1. Open the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
 2. Download `kuali-windows-amd64.exe` (most PCs) or `kuali-windows-arm64.exe` (Copilot+ PCs and other ARM machines).
@@ -27,7 +39,7 @@ The Connector supports **Windows 10 and Windows 11** on both amd64 and arm64.
 
     Open a **new** PowerShell window so the updated `PATH` takes effect.
 
-## Option 2: WSL
+## Option 3: WSL
 
 If you use Windows Subsystem for Linux, install the Linux build inside your WSL distro — see the [Linux guide](linux.md). An AI client running on Windows can still call a Connector installed in WSL if you point the MCP config at the WSL binary path (`\\wsl$\Ubuntu\home\you\.local\bin\kuali`).
 

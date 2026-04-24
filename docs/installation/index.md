@@ -23,8 +23,9 @@ The Kuali Connector is a single self-contained binary, around 20 MB, with no run
 | Method | Best for | Command |
 |---|---|---|
 | Install script | macOS and Linux users who want one command | `curl -fsSL https://connector.kuali.co/install.sh \| sh` |
+| PowerShell installer | Windows users who want one command | `irm https://connector.kuali.co/install.ps1 \| iex` |
 | Homebrew | Mac and Linux users who already use `brew` | `brew update && brew install kualico/tap/kuali` |
-| Direct download | Windows users, air-gapped environments, CI runners | Grab the binary from the [releases page](https://github.com/kualico/kuali-connector/releases/latest) |
+| Direct download | Air-gapped environments, CI runners | Grab the binary from the [releases page](https://github.com/kualico/kuali-connector/releases/latest) |
 
 !!! tip "Auto-updates"
     Once installed, the Connector can update itself:

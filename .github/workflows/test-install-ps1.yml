@@ -1,0 +1,76 @@
+name: Test install.ps1
+
+on:
+  pull_request:
+    paths:
+      - 'docs/install.ps1'
+      - '.github/workflows/test-install-ps1.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse check
+        shell: ${{ matrix.shell }}
+        run: |
+          $tokens = $null; $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$PWD\docs\install.ps1", [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors -and $errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Host $_.Message }
+            exit 1
+          }
+          Write-Host 'OK: no parse errors'
+
+      - name: Run installer
+        shell: ${{ matrix.shell }}
+        run: .\docs\install.ps1
+
+      - name: Verify binary at expected path
+        shell: ${{ matrix.shell }}
+        run: |
+          $exe = "$env:LOCALAPPDATA\Programs\kuali\kuali.exe"
+          if (-not (Test-Path $exe)) {
+            Write-Error "kuali.exe not found at $exe"
+          }
+          Write-Host "Found: $exe"
+
+      - name: Verify user PATH was updated
+        shell: ${{ matrix.shell }}
+        run: |
+          $expected = "$env:LOCALAPPDATA\Programs\kuali"
+          $userPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
+          $match = $userPath.Split(';') |
+            Where-Object { $_.TrimEnd('\') -ieq $expected.TrimEnd('\') }
+          if (-not $match) {
+            Write-Error "User PATH does not contain $expected. Got: $userPath"
+          }
+          Write-Host "User PATH contains install dir (entries: $($match.Count))"
+
+      - name: Verify kuali version runs
+        shell: ${{ matrix.shell }}
+        run: |
+          & "$env:LOCALAPPDATA\Programs\kuali\kuali.exe" version
+
+      - name: Re-run installer (idempotency check)
+        shell: ${{ matrix.shell }}
+        run: .\docs\install.ps1
+
+      - name: Verify PATH has no duplicate entry after re-run
+        shell: ${{ matrix.shell }}
+        run: |
+          $expected = "$env:LOCALAPPDATA\Programs\kuali"
+          $userPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
+          $matches = @($userPath.Split(';') |
+            Where-Object { $_.TrimEnd('\') -ieq $expected.TrimEnd('\') })
+          if ($matches.Count -ne 1) {
+            Write-Error "Expected exactly 1 PATH entry for $expected, found $($matches.Count)"
+          }
+          Write-Host "PATH entry count after re-run: $($matches.Count)"
