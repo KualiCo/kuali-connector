@@ -99,11 +99,24 @@ jobs:
           fi
           echo "Profile $PROFILE contains kuali init block"
 
-      - name: Verify kuali version runs after sourcing profile
-        env:
-          SHELL: /bin/${{ matrix.shell }}
+      - name: Verify binary executes directly
+        run: "${{ github.workspace }}/.kuali-test/bin/kuali" version
+
+      # Source the profile's export line directly. We can't `source` the whole
+      # profile via `bash -c` because Ubuntu's stock .bashrc returns early when
+      # not interactive; real users open interactive terminals, where it works.
+      - name: Verify profile export brings binary onto PATH
         run: |
-          ${{ matrix.shell }} -c 'source $HOME/${{ matrix.profile }} && kuali version'
+          PROFILE="$HOME/${{ matrix.profile }}"
+          EXPORT_LINE=$(grep '^export PATH=' "$PROFILE")
+          if [ -z "$EXPORT_LINE" ]; then
+            echo "No export PATH line found in $PROFILE" >&2
+            cat "$PROFILE" >&2
+            exit 1
+          fi
+          eval "$EXPORT_LINE"
+          which kuali
+          kuali version
 
       - name: Re-run installer (idempotency check)
         env:
