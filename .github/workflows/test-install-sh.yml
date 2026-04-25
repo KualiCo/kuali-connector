@@ -100,7 +100,8 @@ jobs:
           echo "Profile $PROFILE contains kuali init block"
 
       - name: Verify binary executes directly
-        run: "${{ github.workspace }}/.kuali-test/bin/kuali" version
+        run: |
+          "${{ github.workspace }}/.kuali-test/bin/kuali" version
 
       # Source the profile's export line directly. We can't `source` the whole
       # profile via `bash -c` because Ubuntu's stock .bashrc returns early when
