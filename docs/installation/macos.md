@@ -2,7 +2,15 @@
 
 The Connector supports **macOS 12 (Monterey) or later** on both Intel and Apple Silicon Macs. Choose whichever method feels most natural.
 
-## Option 1: Homebrew
+## Option 1: Install script
+
+One line, auto-detects your architecture, installs to `/usr/local/bin/kuali` (prompts for your password if needed):
+
+```bash
+curl -fsSL https://connector.kuali.co/install.sh | sh
+```
+
+## Option 2: Homebrew
 
 If you already use [Homebrew](https://brew.sh):
 
@@ -11,14 +19,6 @@ brew update && brew install kualico/tap/kuali
 ```
 
 Upgrade later with `brew upgrade kuali`, or let the Connector update itself with `kuali update install`.
-
-## Option 2: Install script
-
-One line, auto-detects your architecture, installs to `/usr/local/bin/kuali` (prompts for your password if needed):
-
-```bash
-curl -fsSL https://connector.kuali.co/install.sh | sh
-```
 
 ## Option 3: Direct download
 

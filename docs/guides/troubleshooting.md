@@ -64,21 +64,21 @@ On first launch you'll see *"Windows protected your PC"*. Click **More info**, t
 The API key is wrong, expired, or scoped to a different profile than the command is using.
 
 ```bash
-kuali auth status --profile myschool      # shows resolved URL + masked key
-kuali doctor --profile myschool           # verifies auth end-to-end
+kuali auth status --profile yourschool      # shows resolved URL + masked key
+kuali doctor --profile yourschool           # verifies auth end-to-end
 ```
 
 Common causes:
 
 1. **Wrong profile.** `kuali auth status` without `--profile` shows the default profile. Pass `--profile` to see a specific one.
-2. **Key was revoked.** Go to the Kuali web UI, **Settings → API Keys**, and check. Create a new one and run `kuali auth login --profile myschool` again.
+2. **Key was revoked.** Go to the Kuali web UI, **Settings → API Keys**, and check. Create a new one and re-run `kuali setup --profile yourschool --force` (or `kuali auth login --profile yourschool` if the URL is already correct).
 3. **`KUALI_API_KEY` set in the environment.** A plain `KUALI_API_KEY` takes priority over every profile. Run `env | grep KUALI` to check; unset it and try again.
 
 ## Can't reach the Kuali instance
 
 > `Error: dial tcp: ...` or `x509: certificate signed by unknown authority`
 
-- **Typo in the URL?** `kuali config get api_url --profile myschool` — compare to what you see when you log into the web UI.
+- **Typo in the URL?** `kuali config get api_url --profile yourschool` — compare to what you see when you log into the web UI.
 - **VPN/firewall?** Try reaching it from a browser on the same machine. If the browser works and the Connector doesn't, check for a proxy set via `HTTPS_PROXY`.
 - **Self-signed cert on a local instance?** Set `insecure: true` on the profile: `kuali config set insecure true --profile local`, or pass `-k` per command. Don't enable this against a production instance.
 
@@ -107,7 +107,7 @@ The process should stay running and print nothing to stdout (MCP uses stdio, so 
 MCP clients cache the server config. Rerun setup, then restart the client:
 
 ```bash
-kuali mcp setup --profile myschool
+kuali mcp setup --profile yourschool
 ```
 
 For Claude Desktop, that means Cmd+Q and reopen — not just closing the window.
@@ -146,7 +146,7 @@ unset KUALI_API_KEY KUALI_API_URL
 Grab diagnostics:
 
 ```bash
-kuali doctor --profile myschool -o json > kuali-doctor.json
+kuali doctor --profile yourschool -o json > kuali-doctor.json
 kuali mcp verify > kuali-mcp-verify.txt 2>&1
 kuali version
 ```

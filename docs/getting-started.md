@@ -66,19 +66,40 @@ kuali version
 
 Tell the Connector where your instance lives and sign in. The API key is written to your OS keychain (macOS Keychain, Windows Credential Manager, or libsecret on Linux) — it never lands in a plaintext file.
 
-Run these two commands in your terminal, one after the other:
+Run the guided setup in your terminal:
 
 ```bash
-kuali config set api_url https://yourschool.kualihub.com --profile myschool
-kuali auth login --profile myschool
+kuali setup
 ```
 
-`myschool` is just a label. If you only have one Kuali instance, you can omit `--profile` and the default profile is used. You can add more later by repeating both commands with a different `--profile` name (for example `sandbox`, `prod`, `staging`).
+You'll be asked for two things:
+
+1. **Your Kuali hostname** — for example `yourschool.kualihub.com` (paste a full URL if that's easier; `https://` and trailing paths are stripped).
+2. **Your API key** — input is hidden as you type or paste.
+
+`kuali setup` derives both the API URL (`https://` + hostname) and a profile name (the subdomain — `yourschool` in the example above) from that single hostname, validates the key against your Kuali instance, and saves the result. The first profile you create is used automatically; if you later add a second instance, `setup` will offer to switch the default.
+
+!!! tip "Prefer non-interactive, or scripting it?"
+    Pass everything as flags to skip prompts:
+
+    ```bash
+    kuali setup --hostname yourschool.kualihub.com --api-key YOUR_KEY
+    ```
+
+    Add `--profile myname` to override the auto-derived profile name, `--force` to overwrite an existing profile, or `--default=false` to avoid changing the default profile pointer.
+
+??? note "Fallback: the two-step flow"
+    `kuali setup` is the recommended path, but the original two-command flow still works if you need finer control (for example `http://` for local development):
+
+    ```bash
+    kuali config set api_url https://yourschool.kualihub.com --profile yourschool
+    kuali auth login --profile yourschool
+    ```
 
 Check that everything is talking — still in the same terminal window:
 
 ```bash
-kuali doctor --profile myschool
+kuali doctor --profile yourschool
 ```
 
 You should see green ticks for URL, auth, and API reachability. If anything fails, jump to [troubleshooting](guides/troubleshooting.md).
@@ -90,7 +111,7 @@ One command reads your saved profile, finds your AI client's config file, and wr
 === "Claude Desktop"
 
     ```bash
-    kuali mcp setup --profile myschool
+    kuali mcp setup --profile yourschool
     ```
 
     Then fully quit and relaunch Claude Desktop.
@@ -98,7 +119,7 @@ One command reads your saved profile, finds your AI client's config file, and wr
 === "Claude Code"
 
     ```bash
-    kuali mcp setup --profile myschool --client claude-code
+    kuali mcp setup --profile yourschool --client claude-code
     ```
 
 === "Codex / Gemini / Copilot / VS Code"
@@ -106,10 +127,10 @@ One command reads your saved profile, finds your AI client's config file, and wr
     Run whichever line matches the client you use:
 
     ```bash
-    kuali mcp setup --profile myschool --client codex
-    kuali mcp setup --profile myschool --client gemini-cli
-    kuali mcp setup --profile myschool --client copilot-cli
-    kuali mcp setup --profile myschool --client vscode
+    kuali mcp setup --profile yourschool --client codex
+    kuali mcp setup --profile yourschool --client gemini-cli
+    kuali mcp setup --profile yourschool --client copilot-cli
+    kuali mcp setup --profile yourschool --client vscode
     ```
 
 !!! note "Want the assistant to look but not change anything?"

@@ -32,6 +32,15 @@ Available on every command:
 | `--skip <n>` | Pagination offset |
 | `--all` | Auto-paginate and fetch every page |
 
+## Setup
+
+```bash
+kuali setup [--hostname <host>] [--api-key <key>] [--profile <name>]
+            [--force] [--default[=true|false]]
+```
+
+Guided one-shot onboarding: derives the API URL and profile name from a single Kuali hostname, stores the API key in the OS keychain, and validates the credential against the server before declaring success. Prompts interactively for missing pieces; in non-TTY/scripted use, pass `--hostname` and `--api-key`.
+
 ## Authentication
 
 ```bash
@@ -40,7 +49,7 @@ kuali auth logout  [--profile <name>]
 kuali auth status  [--profile <name>]
 ```
 
-API keys are stored in the OS keychain. See [first connection](../guides/first-connection.md).
+`auth login` is the lower-level path for storing or rotating an API key on an existing profile; `kuali setup` wraps it together with `config set api_url` and a server-side validation. API keys are stored in the OS keychain. See [first connection](../guides/first-connection.md).
 
 ## Configuration
 

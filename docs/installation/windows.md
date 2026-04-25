@@ -67,4 +67,4 @@ Remove-Item "$HOME\.kuali" -Recurse -Force
 
 To remove the directory from your `PATH`, open **Settings → System → About → Advanced system settings → Environment Variables**, find `Path` under *User variables*, edit, and remove the `…\Programs\kuali` entry.
 
-If you stored API keys in Windows Credential Manager (via `kuali auth login`), open **Credential Manager → Windows Credentials** and delete the entries under the `kuali-cli` service.
+If you stored API keys in Windows Credential Manager (via `kuali setup` or `kuali auth login`), open **Credential Manager → Windows Credentials** and delete the entries under the `kuali-cli` service.

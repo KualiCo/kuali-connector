@@ -64,7 +64,7 @@ Adjust `command` to the absolute path of your `kuali` binary (`which kuali` on m
 | `--timeout <seconds>` | Per-command timeout. Default 30. |
 
 !!! warning "Don't pass credentials as env vars in the MCP config"
-    Setting `KUALI_API_KEY` or `KUALI_API_URL` in the MCP server's environment overrides profile resolution entirely, which defeats named profiles and per-profile read-only setups. Store keys with `kuali auth login --profile <name>` instead — the Connector looks them up at start.
+    Setting `KUALI_API_KEY` or `KUALI_API_URL` in the MCP server's environment overrides profile resolution entirely, which defeats named profiles and per-profile read-only setups. Store keys with `kuali setup` (or `kuali auth login --profile <name>` if the profile already exists) instead — the Connector looks them up at start.
 
 ## Verify any of these
 
