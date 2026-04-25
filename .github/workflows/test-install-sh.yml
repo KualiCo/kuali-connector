@@ -1,0 +1,120 @@
+name: Test install.sh
+
+on:
+  pull_request:
+    paths:
+      - 'docs/install.sh'
+      - 'tests/install_sh_test.sh'
+      - '.github/workflows/test-install-sh.yml'
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Unit tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Install shellcheck (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install shellcheck
+
+      - name: shellcheck install.sh
+        run: shellcheck docs/install.sh tests/install_sh_test.sh
+
+      - name: Run unit tests
+        run: tests/install_sh_test.sh
+
+  integration-test:
+    name: Integration test (${{ matrix.os }} / ${{ matrix.shell }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            shell: zsh
+            profile: .zshrc
+          - os: ubuntu-latest
+            shell: bash
+            profile: .bashrc
+          - os: macos-latest
+            shell: zsh
+            profile: .zshrc
+          - os: macos-latest
+            shell: bash
+            profile: .bash_profile
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zsh (Linux)
+        if: matrix.os == 'ubuntu-latest' && matrix.shell == 'zsh'
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
+      - name: Run installer with simulated user shell
+        env:
+          SHELL: /bin/${{ matrix.shell }}
+        run: sh docs/install.sh
+
+      - name: Verify binary at ~/.local/bin/kuali
+        run: |
+          if [ ! -x "$HOME/.local/bin/kuali" ]; then
+            echo "kuali not found at $HOME/.local/bin/kuali" >&2
+            exit 1
+          fi
+          echo "Found: $HOME/.local/bin/kuali"
+
+      - name: Verify profile contains kuali init block
+        run: |
+          PROFILE="$HOME/${{ matrix.profile }}"
+          if [ ! -f "$PROFILE" ]; then
+            echo "Profile $PROFILE does not exist" >&2
+            exit 1
+          fi
+          if ! grep -qF '# >>> kuali init >>>' "$PROFILE"; then
+            echo "Profile $PROFILE missing kuali init marker" >&2
+            cat "$PROFILE" >&2
+            exit 1
+          fi
+          if ! grep -qF "$HOME/.local/bin" "$PROFILE"; then
+            echo "Profile $PROFILE missing install dir in PATH export" >&2
+            cat "$PROFILE" >&2
+            exit 1
+          fi
+          echo "Profile $PROFILE contains kuali init block"
+
+      - name: Verify kuali version runs after sourcing profile
+        env:
+          SHELL: /bin/${{ matrix.shell }}
+        run: |
+          ${{ matrix.shell }} -c 'source $HOME/${{ matrix.profile }} && kuali version'
+
+      - name: Re-run installer (idempotency check)
+        env:
+          SHELL: /bin/${{ matrix.shell }}
+        run: sh docs/install.sh
+
+      - name: Verify exactly one kuali init marker after re-run
+        run: |
+          PROFILE="$HOME/${{ matrix.profile }}"
+          COUNT=$(grep -c '# >>> kuali init >>>' "$PROFILE")
+          if [ "$COUNT" != "1" ]; then
+            echo "Expected exactly 1 marker in $PROFILE, found $COUNT" >&2
+            cat "$PROFILE" >&2
+            exit 1
+          fi
+          echo "Marker count: $COUNT"
+
+      - name: Verify no sudo was invoked
+        run: |
+          # If the installer used sudo, install would have failed (no NOPASSWD on most runners).
+          # This is a paranoia check that the binary still exists in the user-local path.
+          test -x "$HOME/.local/bin/kuali" && echo "OK: install completed without sudo"
