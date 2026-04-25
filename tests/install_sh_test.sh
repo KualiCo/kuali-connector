@@ -213,6 +213,52 @@ test_configure_path_no_shell_detected() {
     teardown_test_env
 }
 
+# === github_api_curl ===
+
+# shellcheck disable=SC2317
+test_github_api_curl_no_token_omits_auth_header() {
+    start_test "github_api_curl_no_token_omits_auth_header"
+    setup_test_env
+    unset GITHUB_TOKEN
+    # Override curl to echo its args; github_api_curl should NOT include -H Authorization.
+    curl() { echo "$@"; }
+    output="$(github_api_curl "https://api.github.com/test")"
+    assert_not_contains "$output" "Authorization" "no auth header when GITHUB_TOKEN unset"
+    assert_contains "$output" "https://api.github.com/test" "URL passed through"
+    unset -f curl
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
+test_github_api_curl_with_token_adds_auth_header() {
+    start_test "github_api_curl_with_token_adds_auth_header"
+    setup_test_env
+    GITHUB_TOKEN="fake-test-token"
+    export GITHUB_TOKEN
+    curl() { echo "$@"; }
+    output="$(github_api_curl "https://api.github.com/test")"
+    assert_contains "$output" "Authorization: Bearer fake-test-token" "auth header added when GITHUB_TOKEN set"
+    assert_contains "$output" "https://api.github.com/test" "URL passed through"
+    unset -f curl
+    unset GITHUB_TOKEN
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
+test_github_api_curl_with_empty_token_omits_auth() {
+    start_test "github_api_curl_with_empty_token_omits_auth"
+    setup_test_env
+    GITHUB_TOKEN=""
+    export GITHUB_TOKEN
+    curl() { echo "$@"; }
+    output="$(github_api_curl "https://api.github.com/test")"
+    assert_not_contains "$output" "Authorization" "no auth header when GITHUB_TOKEN empty"
+    unset -f curl
+    unset GITHUB_TOKEN
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
 test_configure_path_existing_profile_with_other_content() {
     start_test "configure_path_existing_profile_with_other_content"
     setup_test_env
@@ -239,6 +285,9 @@ test_configure_path_idempotent_re_run
 test_configure_path_already_on_path
 test_configure_path_no_shell_detected
 test_configure_path_existing_profile_with_other_content
+test_github_api_curl_no_token_omits_auth_header
+test_github_api_curl_with_token_adds_auth_header
+test_github_api_curl_with_empty_token_omits_auth
 
 if [ "$FAIL" -gt 0 ]; then
     printf '\n%d failed, %d passed\n' "$FAIL" "$PASS" >&2

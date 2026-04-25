@@ -59,22 +59,30 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.shell == 'zsh'
         run: sudo apt-get update && sudo apt-get install -y zsh
 
+      # Use a custom install dir not on the runner's default PATH so we can
+      # deterministically verify profile editing. (GitHub-hosted Ubuntu runners
+      # ship with $HOME/.local/bin already on PATH, which would correctly
+      # cause the installer to skip profile editing.)
       - name: Run installer with simulated user shell
         env:
           SHELL: /bin/${{ matrix.shell }}
+          KUALI_INSTALL_DIR: ${{ github.workspace }}/.kuali-test/bin
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: sh docs/install.sh
 
-      - name: Verify binary at ~/.local/bin/kuali
+      - name: Verify binary at custom install dir
         run: |
-          if [ ! -x "$HOME/.local/bin/kuali" ]; then
-            echo "kuali not found at $HOME/.local/bin/kuali" >&2
+          BIN="${{ github.workspace }}/.kuali-test/bin/kuali"
+          if [ ! -x "$BIN" ]; then
+            echo "kuali not found at $BIN" >&2
             exit 1
           fi
-          echo "Found: $HOME/.local/bin/kuali"
+          echo "Found: $BIN"
 
       - name: Verify profile contains kuali init block
         run: |
           PROFILE="$HOME/${{ matrix.profile }}"
+          INSTALL_DIR="${{ github.workspace }}/.kuali-test/bin"
           if [ ! -f "$PROFILE" ]; then
             echo "Profile $PROFILE does not exist" >&2
             exit 1
@@ -84,7 +92,7 @@ jobs:
             cat "$PROFILE" >&2
             exit 1
           fi
-          if ! grep -qF "$HOME/.local/bin" "$PROFILE"; then
+          if ! grep -qF "$INSTALL_DIR" "$PROFILE"; then
             echo "Profile $PROFILE missing install dir in PATH export" >&2
             cat "$PROFILE" >&2
             exit 1
@@ -100,6 +108,8 @@ jobs:
       - name: Re-run installer (idempotency check)
         env:
           SHELL: /bin/${{ matrix.shell }}
+          KUALI_INSTALL_DIR: ${{ github.workspace }}/.kuali-test/bin
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: sh docs/install.sh
 
       - name: Verify exactly one kuali init marker after re-run
@@ -116,5 +126,5 @@ jobs:
       - name: Verify no sudo was invoked
         run: |
           # If the installer used sudo, install would have failed (no NOPASSWD on most runners).
-          # This is a paranoia check that the binary still exists in the user-local path.
-          test -x "$HOME/.local/bin/kuali" && echo "OK: install completed without sudo"
+          # Paranoia check that the binary still exists in the user-local path.
+          test -x "${{ github.workspace }}/.kuali-test/bin/kuali" && echo "OK: install completed without sudo"

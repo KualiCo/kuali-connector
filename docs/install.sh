@@ -6,6 +6,17 @@ BINARY="kuali"
 
 # --- Library functions (sourceable for tests via KUALI_INSTALL_LIB_ONLY=1) ---
 
+# Wrap curl for GitHub API calls. Adds Bearer auth header if GITHUB_TOKEN is set,
+# which lets users behind shared NAT (and our own CI) avoid the 60/hour
+# anonymous rate limit on api.github.com.
+github_api_curl() {
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
+        curl -fsSL -H "Authorization: Bearer $GITHUB_TOKEN" "$@"
+    else
+        curl -fsSL "$@"
+    fi
+}
+
 detect_profile() {
     shell_name="$(basename "${SHELL:-/bin/zsh}")"
     case "$shell_name" in
@@ -90,9 +101,9 @@ esac
 
 # Prefer the latest stable release; fall back to the most recent published
 # release (including prereleases) so installs work during the RC phase.
-VERSION=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null | grep '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
+VERSION=$(github_api_curl "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null | grep '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
 if [ -z "$VERSION" ]; then
-    VERSION=$(curl -fsSL "https://api.github.com/repos/$REPO/releases" | grep -m1 '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
+    VERSION=$(github_api_curl "https://api.github.com/repos/$REPO/releases" | grep -m1 '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
 fi
 if [ -z "$VERSION" ]; then
     echo "Failed to determine latest version"
