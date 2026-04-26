@@ -125,6 +125,6 @@ configure_path "$INSTALL_DIR"
 
 echo ""
 echo "Next steps:"
-echo "  1. Run: kuali auth login"
-echo "  2. Run: kuali mcp setup --client <your-ai-tool>"
+echo "  1. Run: kuali setup                              # connect to your Kuali instance"
+echo "  2. Run: kuali mcp setup --client <your-ai-tool>  # wire up Claude, Cursor, etc."
 echo "  3. Restart your AI tool"

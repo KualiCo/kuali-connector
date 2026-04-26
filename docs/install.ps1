@@ -68,6 +68,6 @@ if ($PathUpdated) {
 }
 Write-Host ''
 Write-Host 'Next steps:'
-Write-Host '  1. Run: kuali auth login'
-Write-Host '  2. Run: kuali mcp setup --client <your-ai-tool>'
+Write-Host '  1. Run: kuali setup                              # connect to your Kuali instance'
+Write-Host '  2. Run: kuali mcp setup --client <your-ai-tool>  # wire up Claude, Cursor, etc.'
 Write-Host '  3. Restart your AI tool'
