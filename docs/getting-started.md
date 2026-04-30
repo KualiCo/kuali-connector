@@ -17,8 +17,9 @@ Already using Claude Code, Codex CLI, Gemini CLI, GitHub Copilot CLI, or VS Code
 An **API key** is a long secret password that lets the Connector sign in to Kuali on your behalf. The key inherits *your* permissions — anything hidden from you in Kuali stays hidden from the Connector and your AI assistant.
 
 1. Sign in to Kuali in your browser.
-2. Go to **Settings → API Keys**.
-3. Generate a new key and copy it somewhere safe for the next few minutes — you'll paste it once and then it's stored securely.
+2. Click the **circle with your initials** in the top-right corner to open the menu.
+3. Choose **My Account**, then **API Keys**, then click **Create Key**.
+4. Copy the key somewhere safe for the next few minutes — you'll paste it once and then it's stored securely.
 
 You'll also need your **Kuali address** — the part after `https://` in the URL bar when you're signed in. For example, if you sign in at `https://yourschool.kualihub.com`, your address is `yourschool.kualihub.com`.
 
