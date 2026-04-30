@@ -1,150 +1,147 @@
-# Get started in 5 minutes
+# Get started
 
-By the end of this page you'll have the Kuali Connector installed, connected to your Kuali instance, and wired into an AI assistant so you can ask questions in plain English.
+About 15 minutes if it's your first time. By the end, the Kuali Connector will be installed on your computer, connected to your Kuali instance, and answering questions inside your AI assistant.
 
-!!! tip "What you'll need"
-    - A Kuali instance URL (for example, `https://yourschool.kualihub.com`)
-    - A Kuali API key — **Settings → API Keys** in the Kuali web UI. The key inherits your permissions, so **the Connector will only see what you can see**. If you're an admin, it sees admin things; if you're a reviewer, it sees what a reviewer sees.
-    - An AI client you already use: [Claude Desktop](https://claude.ai/download), [Claude Code](https://www.anthropic.com/claude-code), Codex CLI, Gemini CLI, GitHub Copilot CLI, or VS Code with Copilot
+> Already comfortable with terminals and APIs? Skip to [Installation](installation/index.md) for the dense version.
 
----
+## Step 0: Install an AI assistant
 
-!!! info "Every command on this page runs in a terminal"
-    The steps below are typed into a terminal (also called a *command line*, *shell*, or *command prompt*) — **not** into your AI assistant's chat window or a browser address bar. If you've never opened one before:
+The Connector plugs into an AI assistant you already have. If you don't have one yet, install **Claude Desktop** — it's the path with the fewest moving parts and the rest of this page assumes it.
 
-    === "macOS"
+[Download Claude Desktop](https://claude.ai/download){ .md-button .md-button--primary }
 
-        Press <kbd>⌘</kbd> + <kbd>Space</kbd>, type `Terminal`, and press <kbd>Return</kbd>. Or open **Finder → Applications → Utilities → Terminal**. You'll see a window with a prompt like `yourname@Mac ~ %` — that's where commands go.
+Already using Claude Code, Codex CLI, Gemini CLI, GitHub Copilot CLI, or VS Code with Copilot? You're set — keep going.
 
-    === "Linux"
+## Step 1: Get your Kuali API key
 
-        Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd> on most distros (GNOME, KDE, Xfce). Or look in your application menu for **Terminal**, **Console**, **Konsole**, or **GNOME Terminal**. The prompt looks like `yourname@host:~$`.
+An **API key** is a long secret password that lets the Connector sign in to Kuali on your behalf. The key inherits *your* permissions — anything hidden from you in Kuali stays hidden from the Connector and your AI assistant.
 
-    === "Windows"
+1. Sign in to Kuali in your browser.
+2. Click the **circle with your initials** in the top-right corner to open the menu.
+3. Choose **My Account**, then **API Keys**, then click **Create Key**.
+4. Copy the key somewhere safe for the next few minutes — you'll paste it once and then it's stored securely.
 
-        Press <kbd>Win</kbd> + <kbd>X</kbd> and choose **Terminal** or **Windows PowerShell**. On Windows 11 the default is Windows Terminal; on Windows 10, PowerShell. The prompt looks like `PS C:\Users\yourname>`.
+You'll also need your **Kuali address** — the part after `https://` in the URL bar when you're signed in. For example, if you sign in at `https://yourschool.kualihub.com`, your address is `yourschool.kualihub.com`.
 
-    Type each command exactly as shown (use the copy button in the top-right of each code block), then press <kbd>Return</kbd> / <kbd>Enter</kbd>. Do **not** type the prompt characters (`$`, `%`, `PS >`) — they're just visual cues that the terminal is ready for input.
+## Step 2: Open Terminal
 
-## 1. Install the Connector
+Every step from here happens in a small text-only window called **Terminal** (sometimes called a *command line* or *shell*). You'll paste one command at a time and press <kbd>Return</kbd>. Nothing on this page can damage your computer — but if it's your first time, take a breath.
 
-Pick whichever matches your setup. Full per-OS instructions are on the [install](installation/index.md) page.
+=== "macOS"
+
+    Press <kbd>⌘</kbd> + <kbd>Space</kbd>, type `Terminal`, and press <kbd>Return</kbd>. A window opens with a line of text waiting for input — that's where commands go.
+
+=== "Windows"
+
+    Press <kbd>Win</kbd> + <kbd>X</kbd> and choose **Terminal** (Windows 11) or **Windows PowerShell** (Windows 10).
+
+=== "Linux"
+
+    Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd>, or look in your application menu for **Terminal** or **Console**.
+
+!!! tip "Use the copy button"
+    Every code block on this page has a copy button in its top-right corner. Click it, switch to Terminal, paste with <kbd>⌘</kbd>+<kbd>V</kbd> (macOS), <kbd>Ctrl</kbd>+<kbd>V</kbd> (Windows), or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> (Linux), and press <kbd>Return</kbd>. Don't retype commands by hand — copy-paste avoids typos.
+
+## Step 3: Install the Connector
+
+In Terminal, paste the line for your operating system and press <kbd>Return</kbd>:
 
 === "macOS / Linux"
-
-    Run in **Terminal**:
 
     ```bash
     curl -fsSL https://connector.kuali.co/install.sh | sh
     ```
 
-=== "Homebrew (macOS / Linux)"
-
-    Run in **Terminal**:
-
-    ```bash
-    brew update && brew install kualico/tap/kuali
-    ```
-
 === "Windows"
-
-    Run in **PowerShell**:
 
     ```powershell
     irm https://connector.kuali.co/install.ps1 | iex
     ```
 
-    Prefer to download the `.exe` yourself? See the [Windows install guide](installation/windows.md).
-
-Verify the binary is on your path. Run in your terminal (Terminal on macOS/Linux, PowerShell on Windows):
+You'll see a few lines of progress, then Terminal returns to a blank prompt. Check the install worked:
 
 ```bash
 kuali version
 ```
 
-## 2. Connect your Kuali instance
+You should see a version number (something like `kuali 0.5.0`).
 
-Tell the Connector where your instance lives and sign in. The API key is written to your OS keychain (macOS Keychain, Windows Credential Manager, or libsecret on Linux) — it never lands in a plaintext file.
+**What just happened:** a small program called `kuali` is now on your computer. It's the bridge between your AI assistant and Kuali.
 
-Run the guided setup in your terminal:
+??? note "Prefer Homebrew or a manual download?"
+    See the [Installation guide](installation/index.md) for Homebrew, direct binary downloads, and signature verification.
+
+## Step 4: Connect to your Kuali instance
 
 ```bash
 kuali setup
 ```
 
-You'll be asked for two things:
+You'll be asked two questions:
 
-1. **Your Kuali hostname** — for example `yourschool.kualihub.com` (paste a full URL if that's easier; `https://` and trailing paths are stripped).
-2. **Your API key** — input is hidden as you type or paste.
+1. **Your Kuali address** — paste the address from Step 1 (e.g. `yourschool.kualihub.com`).
+2. **Your API key** — paste the key you copied. The text is hidden as you paste; that's expected.
 
-`kuali setup` derives both the API URL (`https://` + hostname) and a profile name (the subdomain — `yourschool` in the example above) from that single hostname, validates the key against your Kuali instance, and saves the result. The first profile you create is used automatically; if you later add a second instance, `setup` will offer to switch the default.
+When it finishes, you'll see something like `Profile "yourschool" saved · API key validated ✓`.
 
-!!! tip "Prefer non-interactive, or scripting it?"
-    Pass everything as flags to skip prompts:
+**What just happened:** the Connector confirmed your key works and stored it in your computer's secure password manager (the macOS Keychain or Windows Credential Manager). The key is never written to a plain file on disk.
 
-    ```bash
-    kuali setup --hostname yourschool.kualihub.com --api-key YOUR_KEY
-    ```
-
-    Add `--profile myname` to override the auto-derived profile name, `--force` to overwrite an existing profile, or `--default=false` to avoid changing the default profile pointer.
-
-??? note "Fallback: the two-step flow"
-    `kuali setup` is the recommended path, but the original two-command flow still works if you need finer control (for example `http://` for local development):
-
-    ```bash
-    kuali config set api_url https://yourschool.kualihub.com --profile yourschool
-    kuali auth login --profile yourschool
-    ```
-
-Check that everything is talking — still in the same terminal window:
+Now run a quick health check:
 
 ```bash
-kuali doctor --profile yourschool
+kuali doctor
 ```
 
-You should see green ticks for URL, auth, and API reachability. If anything fails, jump to [troubleshooting](guides/troubleshooting.md).
+You should see green checkmarks for URL, authentication, and API reachability. If anything fails, jump to [troubleshooting](guides/troubleshooting.md).
 
-## 3. Wire it into your AI assistant
+## Step 5: Connect the Connector to your AI assistant
 
-One command reads your saved profile, finds your AI client's config file, and writes the Connector entry for you. Run it in the same terminal.
+One more command. Pick the tab for your assistant.
 
 === "Claude Desktop"
 
     ```bash
-    kuali mcp setup --profile yourschool
+    kuali mcp setup
     ```
 
-    Then fully quit and relaunch Claude Desktop.
+    Then **fully quit** Claude Desktop and reopen it. (Closing the window isn't enough — right-click the Claude icon and choose **Quit**, or use <kbd>⌘</kbd>+<kbd>Q</kbd> on macOS.)
 
 === "Claude Code"
 
     ```bash
-    kuali mcp setup --profile yourschool --client claude-code
+    kuali mcp setup --client claude-code
     ```
 
-=== "Codex / Gemini / Copilot / VS Code"
-
-    Run whichever line matches the client you use:
+??? note "Using Codex, Gemini, Copilot, or VS Code instead?"
+    Run whichever line matches your client:
 
     ```bash
-    kuali mcp setup --profile yourschool --client codex
-    kuali mcp setup --profile yourschool --client gemini-cli
-    kuali mcp setup --profile yourschool --client copilot-cli
-    kuali mcp setup --profile yourschool --client vscode
+    kuali mcp setup --client codex
+    kuali mcp setup --client gemini-cli
+    kuali mcp setup --client copilot-cli
+    kuali mcp setup --client vscode
     ```
 
-!!! note "Want the assistant to look but not change anything?"
-    Add `--tools read-only` to the setup command. Only read tools (list, get, export, search, status) are registered — create, update, submit, approve, and delete are hidden. See [Read-only mode](guides/read-only-mode.md).
-
-Confirm the setup landed correctly — again, in the terminal:
+Confirm the assistant can see the Connector:
 
 ```bash
 kuali mcp verify
 ```
 
-## 4. Ask your assistant something
+**What just happened:** your AI assistant now knows how to call the Connector. When you ask it a Kuali question, it can fetch the answer directly from your instance.
 
-You're done with the terminal — the remaining steps happen inside your AI client. Open Claude Desktop (or your chosen client) and type one of these prompts into the **chat window**:
+!!! tip "Want the assistant to look but never change anything?"
+    Re-run setup with read-only mode:
+
+    ```bash
+    kuali mcp setup --tools read-only
+    ```
+
+    Only the *list*, *get*, *search*, and *export* tools stay registered — *create*, *update*, *submit*, *approve*, *delete*, and *import* are hidden. See [Read-only mode](guides/read-only-mode.md).
+
+## Step 6: Ask your assistant something
+
+You're done with Terminal. Open your AI assistant and type one of these prompts into the chat window:
 
 > "List the first ten apps in our Kuali instance."
 
@@ -152,7 +149,7 @@ You're done with the terminal — the remaining steps happen inside your AI clie
 
 > "Summarize how many submissions each Human Ethics reviewer has completed this quarter."
 
-The assistant will call the appropriate MCP tools (`kuali_apps_list`, `kuali_workflows_actions`, `kuali_documents_list`, …) and surface the answer right in the conversation.
+The assistant will fetch the answer from Kuali and reply in plain English.
 
 The [prompt library](guides/prompts.md) has dozens more — including prompts for building apps from PDFs, importing CSVs with column-mapping dialogs, analyzing workflows, and generating chart reports.
 
