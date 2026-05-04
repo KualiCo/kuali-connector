@@ -19,16 +19,27 @@ switch ($env:PROCESSOR_ARCHITECTURE) {
 
 # Prefer the latest stable release; fall back to the most recent published
 # release (including prereleases) so installs work during the RC phase.
+# Set $env:KUALI_VERSION (e.g. '1.0.0-rc14' or 'v1.0.0-rc14') to pin a version.
+# Set $env:GITHUB_TOKEN to authenticate API calls (5000/hour vs 60/hour anonymous).
 function Get-LatestVersion {
+    if ($env:KUALI_VERSION) { return $env:KUALI_VERSION.TrimStart('v') }
+    $headers = @{}
+    if ($env:GITHUB_TOKEN) { $headers['Authorization'] = "Bearer $env:GITHUB_TOKEN" }
+    $errors = @()
     try {
-        $r = Invoke-RestMethod -UseBasicParsing -Uri "https://api.github.com/repos/$Repo/releases/latest"
+        $r = Invoke-RestMethod -UseBasicParsing -Headers $headers -Uri "https://api.github.com/repos/$Repo/releases/latest"
         if ($r.tag_name) { return $r.tag_name.TrimStart('v') }
-    } catch { }
+    } catch {
+        $errors += "releases/latest: $($_.Exception.Message)"
+    }
     try {
-        $all = Invoke-RestMethod -UseBasicParsing -Uri "https://api.github.com/repos/$Repo/releases"
+        $all = Invoke-RestMethod -UseBasicParsing -Headers $headers -Uri "https://api.github.com/repos/$Repo/releases"
         if ($all -and $all[0].tag_name) { return $all[0].tag_name.TrimStart('v') }
-    } catch { }
-    Write-Error 'Failed to determine latest version from GitHub.'
+    } catch {
+        $errors += "releases: $($_.Exception.Message)"
+    }
+    $detail = if ($errors) { ' Underlying errors: ' + ($errors -join '; ') + '.' } else { '' }
+    Write-Error "Failed to determine latest version from GitHub.$detail Set `$env:KUALI_VERSION to pin a specific tag, or see https://github.com/$Repo/releases."
 }
 
 $Version = Get-LatestVersion
@@ -39,7 +50,12 @@ $Tmp = [System.IO.Path]::GetTempFileName() + '.exe'
 try {
     Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $Tmp
 } catch {
-    Write-Error "Download failed from $Url. See https://connector.kuali.co/installation/windows/ for manual steps. Underlying error: $($_.Exception.Message)"
+    $hint = if ($env:KUALI_VERSION) {
+        "Check that v$Version exists at https://github.com/$Repo/releases."
+    } else {
+        'See https://connector.kuali.co/installation/windows/ for manual steps.'
+    }
+    Write-Error "Download failed from $Url. $hint Underlying error: $($_.Exception.Message)"
 }
 
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null

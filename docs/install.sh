@@ -36,6 +36,23 @@ detect_profile() {
     esac
 }
 
+resolve_version() {
+    if [ -n "${KUALI_VERSION:-}" ]; then
+        printf '%s\n' "${KUALI_VERSION#v}"
+        return 0
+    fi
+    # Prefer the latest stable release; fall back to the most recent published
+    # release (including prereleases) so installs work during the RC phase.
+    version=$(github_api_curl "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null | grep '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
+    if [ -z "$version" ]; then
+        version=$(github_api_curl "https://api.github.com/repos/$REPO/releases" | grep -m1 '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
+    fi
+    if [ -z "$version" ]; then
+        return 1
+    fi
+    printf '%s\n' "$version"
+}
+
 configure_path() {
     install_dir="$1"
     case ":$PATH:" in
@@ -99,21 +116,19 @@ case "$ARCH" in
     *)             echo "Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 
-# Prefer the latest stable release; fall back to the most recent published
-# release (including prereleases) so installs work during the RC phase.
-VERSION=$(github_api_curl "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null | grep '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
-if [ -z "$VERSION" ]; then
-    VERSION=$(github_api_curl "https://api.github.com/repos/$REPO/releases" | grep -m1 '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')
-fi
-if [ -z "$VERSION" ]; then
+VERSION=$(resolve_version) || {
     echo "Failed to determine latest version"
     exit 1
-fi
+}
 
 URL="https://github.com/$REPO/releases/download/v${VERSION}/${BINARY}-${OS}-${ARCH}"
 echo "Downloading kuali v${VERSION} for ${OS}/${ARCH}..."
 TMPFILE=$(mktemp)
-curl -fsSL -o "$TMPFILE" "$URL"
+if ! curl -fsSL -o "$TMPFILE" "$URL"; then
+    echo "Failed to download $URL"
+    echo "Check that the version exists at https://github.com/$REPO/releases"
+    exit 1
+fi
 chmod +x "$TMPFILE"
 
 mkdir -p "$INSTALL_DIR"

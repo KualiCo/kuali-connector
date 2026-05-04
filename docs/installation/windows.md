@@ -14,6 +14,16 @@ The script picks the right build for your CPU (amd64 or arm64), downloads it to 
 
 Open a **new** PowerShell window when it finishes so the updated `PATH` takes effect.
 
+??? tip "Install a specific version (prereleases or older builds)"
+    Set `KUALI_VERSION` to any [published release tag](https://github.com/kualico/kuali-connector/releases) — with or without the `v` prefix:
+
+    ```powershell
+    $env:KUALI_VERSION = '1.0.0-rc14'
+    irm https://connector.kuali.co/install.ps1 | iex
+    ```
+
+    Without `KUALI_VERSION`, the script installs the latest stable release.
+
 ## Option 2: Direct download
 
 1. Open the [latest release](https://github.com/kualico/kuali-connector/releases/latest).
