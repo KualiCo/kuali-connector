@@ -10,6 +10,15 @@ One line, auto-detects your architecture, installs to `/usr/local/bin/kuali` (pr
 curl -fsSL https://connector.kuali.co/install.sh | sh
 ```
 
+??? tip "Install a specific version (prereleases or older builds)"
+    Set `KUALI_VERSION` to any [published release tag](https://github.com/kualico/kuali-connector/releases) — with or without the `v` prefix:
+
+    ```bash
+    curl -fsSL https://connector.kuali.co/install.sh | KUALI_VERSION=1.0.0-rc14 sh
+    ```
+
+    Without `KUALI_VERSION`, the script installs the latest stable release.
+
 ## Option 2: Homebrew
 
 If you already use [Homebrew](https://brew.sh):

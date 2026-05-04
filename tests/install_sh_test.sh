@@ -258,6 +258,89 @@ test_github_api_curl_with_empty_token_omits_auth() {
     teardown_test_env
 }
 
+# === resolve_version ===
+
+# shellcheck disable=SC2317
+test_resolve_version_env_var_pins_exact() {
+    start_test "resolve_version_env_var_pins_exact"
+    setup_test_env
+    KUALI_VERSION="1.0.0-rc14"
+    export KUALI_VERSION
+    assert_eq "$(resolve_version)" "1.0.0-rc14" "KUALI_VERSION pinned exactly"
+    unset KUALI_VERSION
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
+test_resolve_version_env_var_strips_v_prefix() {
+    start_test "resolve_version_env_var_strips_v_prefix"
+    setup_test_env
+    KUALI_VERSION="v1.0.0-rc14"
+    export KUALI_VERSION
+    assert_eq "$(resolve_version)" "1.0.0-rc14" "leading v is stripped"
+    unset KUALI_VERSION
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
+test_resolve_version_empty_env_var_falls_through_to_api() {
+    start_test "resolve_version_empty_env_var_falls_through_to_api"
+    setup_test_env
+    KUALI_VERSION=""
+    export KUALI_VERSION
+    # Mock github_api_curl to return a stable release tag.
+    github_api_curl() { echo '"tag_name": "v9.9.9"'; }
+    assert_eq "$(resolve_version)" "9.9.9" "empty KUALI_VERSION uses API path"
+    unset -f github_api_curl
+    unset KUALI_VERSION
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
+test_resolve_version_unset_uses_api_stable() {
+    start_test "resolve_version_unset_uses_api_stable"
+    setup_test_env
+    unset KUALI_VERSION
+    github_api_curl() { echo '"tag_name": "v1.2.3"'; }
+    assert_eq "$(resolve_version)" "1.2.3" "stable tag parsed from API"
+    unset -f github_api_curl
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
+test_resolve_version_unset_falls_back_to_releases_list() {
+    start_test "resolve_version_unset_falls_back_to_releases_list"
+    setup_test_env
+    unset KUALI_VERSION
+    # First call (releases/latest) returns nothing; second (releases) returns RC.
+    github_api_curl() {
+        case "$1" in
+            *releases/latest) return 0 ;;  # empty stdout
+            *releases)        echo '"tag_name": "v1.0.0-rc14"' ;;
+        esac
+    }
+    assert_eq "$(resolve_version)" "1.0.0-rc14" "falls back to first release in list"
+    unset -f github_api_curl
+    teardown_test_env
+}
+
+# shellcheck disable=SC2317
+test_resolve_version_no_releases_returns_failure() {
+    start_test "resolve_version_no_releases_returns_failure"
+    setup_test_env
+    unset KUALI_VERSION
+    github_api_curl() { return 0; }  # both calls return empty stdout
+    if output="$(resolve_version 2>&1)"; then
+        FAIL=$((FAIL + 1))
+        printf 'FAIL [%s] expected non-zero exit but got success (output: %s)\n' \
+            "$CURRENT_TEST" "$output" >&2
+    else
+        PASS=$((PASS + 1))
+    fi
+    unset -f github_api_curl
+    teardown_test_env
+}
+
 # shellcheck disable=SC2317
 test_configure_path_existing_profile_with_other_content() {
     start_test "configure_path_existing_profile_with_other_content"
@@ -288,6 +371,12 @@ test_configure_path_existing_profile_with_other_content
 test_github_api_curl_no_token_omits_auth_header
 test_github_api_curl_with_token_adds_auth_header
 test_github_api_curl_with_empty_token_omits_auth
+test_resolve_version_env_var_pins_exact
+test_resolve_version_env_var_strips_v_prefix
+test_resolve_version_empty_env_var_falls_through_to_api
+test_resolve_version_unset_uses_api_stable
+test_resolve_version_unset_falls_back_to_releases_list
+test_resolve_version_no_releases_returns_failure
 
 if [ "$FAIL" -gt 0 ]; then
     printf '\n%d failed, %d passed\n' "$FAIL" "$PASS" >&2
