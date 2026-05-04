@@ -59,7 +59,10 @@ try {
 }
 
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
-Move-Item -Force -Path $Tmp -Destination $ExePath
+# Move-Item -Force is unreliable when the destination exists on Windows; copy then
+# delete the temp file so re-running the installer to upgrade works cleanly.
+Copy-Item -Force -Path $Tmp -Destination $ExePath
+Remove-Item -Force -Path $Tmp -ErrorAction SilentlyContinue
 Unblock-File -Path $ExePath
 
 $UserPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
