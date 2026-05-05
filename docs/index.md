@@ -152,7 +152,7 @@ That's how AI tool use works: when the assistant calls a Connector tool, the res
 
 </article>
 
-<aside class="kuali-security__ledger" aria-labelledby="kuali-security-ledger-title">
+<aside class="kuali-security__ledger" aria-labelledby="kuali-security-ledger-title" markdown="1">
 
 ### By default, always { #kuali-security-ledger-title .kuali-security__ledger-title }
 
