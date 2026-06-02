@@ -23,6 +23,9 @@ An **API key** is a long secret password that lets the Connector sign in to Kual
 
 You'll also need your **Kuali address** — the part after `https://` in the URL bar when you're signed in. For example, if you sign in at `https://yourschool.kualihub.com`, your address is `yourschool.kualihub.com`.
 
+!!! note "Kuali Platform only"
+    The Connector works with the **Kuali Platform** (`*.kualihub.com`, `*.kualibuild.com`, and regional variants). If you sign in at a `*.kuali.co` address, you're on **Classic** Kuali, and the Connector won't connect — see the [FAQ](faq.md#does-it-work-with-kuali-research-kfs-or-other-classic-kuali-products) for details.
+
 ## Step 2: Open Terminal
 
 Every step from here happens in a small text-only window called **Terminal** (sometimes called a *command line* or *shell*). You'll paste one command at a time and press <kbd>Return</kbd>. Nothing on this page can damage your computer — but if it's your first time, take a breath.

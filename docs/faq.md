@@ -62,6 +62,14 @@ In short: if your AI client launches a local binary over stdio, the Connector wo
 
 macOS 12 or later (Intel and Apple Silicon), Windows 10 or later (amd64 and arm64), and any modern 64-bit Linux. Binaries are statically linked — no runtime dependencies.
 
+## Does it work with Kuali Research, KFS, or other Classic Kuali products?
+
+No. The Connector targets the **Kuali Platform** — the modern, cloud-hosted system that runs at `*.kualihub.com`, `*.kualibuild.com`, and the regional variants (`*.kualihubca.com`, `*.kualibuildca.com`).
+
+It does **not** talk to **Classic** Kuali products. Several products exist in both editions (Curriculum, Research, Sponsored Programs, Conflict of Interest, Protocols), so the product name alone doesn't tell you which one you have — the hostname does.
+
+If you're not sure which you're on, the URL you sign in at is the test: any `*.kuali.co` address is Classic and the Connector won't work against it. Platform tenants live on the domains listed above.
+
 ## Does it work offline?
 
 No. The Connector is a thin client. It needs a live connection to your Kuali instance (and, if you're using an AI assistant, to your AI vendor) to function.

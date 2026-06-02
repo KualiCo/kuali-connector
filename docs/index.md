@@ -125,6 +125,8 @@ The same binary also works as a full-featured CLI (`kuali apps list`, `kuali doc
 
 The Connector is for people who already interact with Kuali regularly — curriculum coordinators, research administrators, sponsored-programs officers, build-app owners, and platform admins — and who want their AI assistant to do the routine work for them. If your team uses Claude, Copilot, Gemini, or any other AI client that supports local MCP servers, you can put Kuali in front of it with one command. (ChatGPT isn't supported yet — see the [FAQ](faq.md#does-it-work-with-chatgpt) for why.)
 
+The Connector works with the **Kuali Platform**, not Classic Kuali products. If your tenant is on `*.kuali.co`, see the [FAQ](faq.md#does-it-work-with-kuali-research-kfs-or-other-classic-kuali-products).
+
 If you only log into Kuali occasionally, the web app is probably still the fastest path.
 
 </div>
