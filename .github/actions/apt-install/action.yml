@@ -1,0 +1,30 @@
+name: "Install apt packages"
+description: "Points apt at archive.ubuntu.com instead of the runner's Azure mirror, bounds its network timeouts, and installs the given packages."
+inputs:
+  packages:
+    description: "Space-separated apt package names. Leave empty to only configure apt for a later step that installs packages itself (e.g. `playwright install --with-deps`)."
+    required: false
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Configure apt and install ${{ inputs.packages }}
+      shell: bash
+      env:
+        PACKAGES: ${{ inputs.packages }}
+      run: |
+        set -euo pipefail
+        # The runner lists azure.archive.ubuntu.com first, and apt does not fail over when that name stops resolving.
+        for f in /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list; do
+          if [ -f "$f" ]; then
+            sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|https://archive.ubuntu.com/ubuntu/|' "$f"
+          fi
+        done
+        printf 'Acquire::Retries "3";\nAcquire::http::Timeout "20";\nAcquire::https::Timeout "20";\n' \
+          | sudo tee /etc/apt/apt.conf.d/99ci-network >/dev/null
+        if [ -z "$PACKAGES" ]; then
+          exit 0
+        fi
+        sudo apt-get update || echo "::warning::apt-get update reported errors; continuing to install"
+        # shellcheck disable=SC2086
+        sudo apt-get install -y $PACKAGES
