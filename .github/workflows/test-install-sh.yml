@@ -6,6 +6,7 @@ on:
       - 'docs/install.sh'
       - 'tests/install_sh_test.sh'
       - '.github/workflows/test-install-sh.yml'
+      - '.github/actions/apt-install/**'
   workflow_dispatch:
 
 jobs:
@@ -16,12 +17,15 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
       - name: Install shellcheck (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
+        uses: ./.github/actions/apt-install
+        with:
+          packages: shellcheck
 
       - name: Install shellcheck (macOS)
         if: matrix.os == 'macos-latest'
@@ -52,12 +56,15 @@ jobs:
             shell: bash
             profile: .bash_profile
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
       - name: Install zsh (Linux)
         if: matrix.os == 'ubuntu-latest' && matrix.shell == 'zsh'
-        run: sudo apt-get update && sudo apt-get install -y zsh
+        uses: ./.github/actions/apt-install
+        with:
+          packages: zsh
 
       # Use a custom install dir not on the runner's default PATH so we can
       # deterministically verify profile editing. (GitHub-hosted Ubuntu runners
