@@ -14,23 +14,40 @@ permissions:
   pages: write
   id-token: write
 
+# Queue deploys instead of cancelling one mid-publish; the guard stands down
+# whichever queued run is no longer current.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.guard.outputs.deploy }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # needed for git-revision-date plugin
 
+      # Skip the build when main has moved on in the docs, and fail a re-run of an old
+      # run, so an old run can't republish older docs. Paths match on.push.paths.
+      - name: Refuse to publish a superseded commit
+        id: guard
+        uses: kualibuild/github-actions/superseded-guard@master
+        with:
+          paths: |
+            docs/**
+            mkdocs.yml
+            .github/workflows/docs.yml
+
       - uses: actions/setup-python@v5
+        if: steps.guard.outputs.deploy == 'true'
         with:
           python-version: '3.12'
 
       - name: Install dependencies
+        if: steps.guard.outputs.deploy == 'true'
         run: |
           pip install \
             mkdocs-material \
@@ -38,18 +55,35 @@ jobs:
             mkdocs-git-revision-date-localized-plugin
 
       - name: Build site
+        if: steps.guard.outputs.deploy == 'true'
         run: mkdocs build --strict
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.guard.outputs.deploy == 'true'
         with:
           path: site
 
   deploy:
     needs: build
+    if: needs.build.outputs.deploy == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # "Re-run failed jobs" reuses the build job's outputs, so check again here: a
+      # re-run of this job alone must not publish an artifact that is no longer current.
+      - uses: actions/checkout@v4
+
+      - name: Refuse to publish a superseded commit
+        id: guard
+        uses: kualibuild/github-actions/superseded-guard@master
+        with:
+          paths: |
+            docs/**
+            mkdocs.yml
+            .github/workflows/docs.yml
+
       - id: deployment
+        if: steps.guard.outputs.deploy == 'true'
         uses: actions/deploy-pages@v4
