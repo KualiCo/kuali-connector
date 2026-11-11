@@ -6,6 +6,7 @@ on:
       - 'docs/install.sh'
       - 'tests/install_sh_test.sh'
       - '.github/workflows/test-install-sh.yml'
+      - '.github/actions/apt-install/**'
   workflow_dispatch:
 
 jobs:
